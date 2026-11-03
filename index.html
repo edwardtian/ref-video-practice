@@ -20,8 +20,10 @@
     --accent: #ff4d6d;
     --accent-soft: rgba(255,77,109,0.15);
     --ok: #58d68d;
+    --warn: #f0b429;
     --radius: 14px;
     --font: ui-sans-serif, -apple-system, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --header-h: 56px;
   }
 
   * { box-sizing: border-box; }
@@ -34,6 +36,8 @@
     min-height: 100%;
   }
   body { overflow-y: auto; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+  .is-hidden { display: none !important; }
 
   /* ── header ─────────────────────────────────────────────── */
   .app-header {
@@ -41,26 +45,56 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 14px 22px;
+    padding: 9px 20px;
     border-bottom: 1px solid var(--edge);
-    background: rgba(15,19,28,0.9);
-    backdrop-filter: blur(12px);
+    background: rgba(13,17,25,0.92);
+    backdrop-filter: blur(14px);
     position: sticky;
     top: 0;
-    z-index: 30;
+    z-index: 40;
   }
-  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
   .logo {
-    width: 34px; height: 34px; flex: none;
+    width: 32px; height: 32px; flex: none;
     border-radius: 10px;
     background: linear-gradient(135deg, var(--accent) 0%, #b84567 100%);
     box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
     display: flex; align-items: center; justify-content: center;
     color: #fff; font-weight: 800; font-size: 15px;
   }
-  .brand h1 { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
-  .brand p { margin: 2px 0 0; font-size: 11.5px; color: var(--dim); }
-  .header-actions { display: flex; align-items: center; gap: 10px; }
+  .brand h1 { margin: 0; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.15; }
+  .brand p { margin: 1px 0 0; font-size: 11px; color: var(--faint); }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+
+  /* step tracker: shows where you are in the workflow */
+  .steps { display: flex; align-items: center; gap: 2px; flex: none; }
+  .step {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 10px 5px 6px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--faint);
+    font-size: 11.5px; font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .step .num {
+    width: 18px; height: 18px; flex: none;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+    background: rgba(255,255,255,.07);
+    color: var(--dim);
+  }
+  .step:hover { background: rgba(255,255,255,.05); color: var(--ink); }
+  .step.is-done { color: var(--dim); }
+  .step.is-done .num { background: rgba(88,214,141,.16); color: var(--ok); }
+  .step.is-current { color: var(--ink); background: var(--bg-soft); border-color: var(--edge); }
+  .step.is-current .num { background: var(--accent); color: #fff; }
+  .step-sep { width: 10px; height: 1px; background: var(--edge-strong); flex: none; }
+
   .status-chip {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 5px 10px;
@@ -79,8 +113,8 @@
   .workspace {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 16px 24px 30px;
+    gap: 14px;
+    padding: 14px 20px 18px;
     max-width: 1560px;
     margin: 0 auto;
   }
@@ -90,13 +124,39 @@
     gap: 16px;
     align-items: start;
   }
-  .stage-col { display: flex; flex-direction: column; min-width: 0; }
+  .stage-col { display: flex; flex-direction: column; gap: 0; min-width: 0; }
   .panel-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
   .panel-slot { min-width: 0; }
 
   .cell-wrap { display: flex; align-items: center; justify-content: center; min-width: 0; }
   #ref-cell-wrap, #take-cell-wrap { width: 100%; }
-  .stage-col { gap: 0; }
+
+  /* stage card: title row + media */
+  .stage-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 2px 8px;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+  .stage-title {
+    display: inline-flex; align-items: center; gap: 7px;
+    margin: 0;
+    font-size: 12.5px; font-weight: 700; color: var(--ink);
+    letter-spacing: .01em;
+    white-space: nowrap;
+    flex: none;
+  }
+  .stage-title .num {
+    width: 19px; height: 19px; flex: none;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10.5px; font-weight: 700;
+    background: rgba(255,255,255,.08); color: var(--dim);
+  }
+  .stage-title.is-done .num { background: rgba(88,214,141,.16); color: var(--ok); }
+  .stage-title.is-current .num { background: var(--accent); color: #fff; }
+  .stage-sub { font-size: 11px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .stage-tools { margin-left: auto; display: flex; align-items: center; gap: 6px; flex: none; }
 
   .cell {
     position: relative;
@@ -138,19 +198,31 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 7px;
     padding: 18px;
     text-align: center;
     color: var(--dim);
-    font-size: 12.5px;
+    font-size: 12px;
     line-height: 1.5;
     z-index: 3;
     background: radial-gradient(120% 90% at 50% 30%, #151b26 0%, #07090d 75%);
   }
-  .cell-empty .glyph { font-size: 26px; opacity: .8; }
-  .cell-empty strong { color: var(--ink); font-size: 13.5px; font-weight: 600; }
-  .cell-empty .btn { margin-top: 4px; }
+  .cell-empty .glyph {
+    width: 46px; height: 46px;
+    margin-bottom: 2px;
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.05);
+    border: 1px solid var(--edge);
+    color: var(--dim);
+  }
+  .cell-empty .glyph svg { width: 22px; height: 22px; }
+  .cell-empty strong { color: var(--ink); font-size: 14px; font-weight: 650; }
+  .cell-empty span.lede { max-width: 330px; }
+  .cell-empty .empty-actions { display: flex; gap: 8px; margin-top: 5px; flex-wrap: wrap; justify-content: center; }
+  .cell-empty .btn { margin-top: 0; }
   .cell-empty.is-hidden { display: none; }
+  .cell-empty .kbd { margin-left: 4px; }
 
   .cell-badge {
     position: absolute;
@@ -180,7 +252,8 @@
     opacity: 0; pointer-events: none;
     transition: opacity .15s;
   }
-  .cell-play.is-on { opacity: 1; pointer-events: auto; }
+  .cell-play.is-on { opacity: 1; }
+  .cell-play.is-on .big-play { pointer-events: auto; }
   .cell-play .big-play {
     width: 58px; height: 58px;
     border-radius: 50%;
@@ -231,6 +304,124 @@
     color: var(--dim);
   }
 
+  /* countdown before recording */
+  .countdown-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 78;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(4,6,10,.45);
+    pointer-events: none;
+    backdrop-filter: blur(2px);
+  }
+  .countdown-overlay.is-on { display: flex; }
+  .countdown-number {
+    font-size: 88px;
+    font-weight: 800;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 0 8px 34px rgba(0,0,0,.65), 0 0 0 rgba(255,77,109,0);
+    font-variant-numeric: tabular-nums;
+  }
+  .countdown-number.pop { animation: countPop .85s ease-out; }
+  @keyframes countPop {
+    0%   { transform: scale(1.45); opacity: .2; }
+    55%  { transform: scale(1);   opacity: 1; }
+    100% { transform: scale(1);   opacity: .92; }
+  }
+  .countdown-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  /* crop rectangle drawn directly on the stage */
+  .crop-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    user-select: none;
+    touch-action: none;
+  }
+  .crop-overlay.is-active { pointer-events: auto; cursor: crosshair; }
+  .crop-overlay.is-hidden { display: none; }
+  .crop-shade {
+    position: absolute;
+    background: rgba(5,7,11,.62);
+    pointer-events: none;
+    display: block;
+  }
+  .crop-shade.is-hidden { display: none; }
+  .crop-box {
+    position: absolute;
+    border: 1.5px dashed var(--accent);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), 0 0 0 1px rgba(0,0,0,.35);
+    pointer-events: auto;
+    cursor: move;
+    background: transparent;
+  }
+  .crop-box.is-hidden { display: none; }
+  /* guidance shown on the stage while the crop editor is open */
+  .crop-edit-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 12px;
+    transform: translateX(-50%);
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(10,13,18,.86);
+    border: 1px solid var(--edge-strong);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 22px rgba(0,0,0,.45);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .crop-overlay.is-active .crop-edit-hint { display: flex; }
+  .crop-edit-hint .sep { width: 1px; height: 12px; background: var(--edge-strong); }
+  .crop-edit-hint .muted { color: var(--dim); font-weight: 500; }
+
+  .crop-handle {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    background: var(--accent);
+    border: 1.5px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.45);
+    pointer-events: auto;
+  }
+  .crop-handle.nw { left: -7px; top: -7px; cursor: nwse-resize; }
+  .crop-handle.ne { right: -7px; top: -7px; cursor: nesw-resize; }
+  .crop-handle.sw { left: -7px; bottom: -7px; cursor: nesw-resize; }
+  .crop-handle.se { right: -7px; bottom: -7px; cursor: nwse-resize; }
+  .crop-label {
+    position: absolute;
+    left: 5px; top: 5px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: rgba(10,13,18,.85);
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--ink);
+    pointer-events: none;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
   /* border divider */
   .divider {
     width: 100%;
@@ -240,19 +431,29 @@
   }
   .divider-wrap { display: flex; align-items: center; justify-content: center; padding: 5px 0; }
 
-  /* review strip under the two stages */
+  /* action bar: review + export, sticky so the main actions are always reachable */
   .review-strip {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 8px 10px;
-    border: 1px solid var(--edge);
+    gap: 14px;
+    padding: 9px 12px;
+    border: 1px solid var(--edge-strong);
     border-radius: var(--radius);
-    background: var(--panel);
-    margin-top: 2px;
+    background: rgba(21,26,35,.96);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 14px 34px rgba(0,0,0,.42);
+    z-index: 20;
+    /* keeps button tooltips from escaping the bar */
+    overflow: hidden;
   }
-  .review-strip .transport { flex: 1 1 auto; }
-  .strip-hint { flex: 0 1 auto; font-size: 10.5px; color: var(--faint); line-height: 1.4; }
+  .review-strip .transport { flex: 1 1 auto; min-width: 0; }
+  .review-strip .transport .btn { min-width: 104px; }
+  .strip-hint { flex: 0 1 auto; font-size: 11px; color: var(--dim); line-height: 1.4; }
+  .strip-divider { width: 1px; align-self: stretch; background: var(--edge); flex: none; }
+  .strip-export { display: flex; align-items: center; gap: 10px; flex: none; }
+  .strip-export .btn { min-width: 168px; }
+  .strip-meta { display: flex; flex-direction: column; gap: 1px; font-size: 10.5px; color: var(--faint); line-height: 1.35; white-space: nowrap; }
+  .strip-meta b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
   .divider-label {
     position: absolute;
     font-size: 9.5px;
@@ -267,49 +468,80 @@
     background: var(--panel);
     border: 1px solid var(--edge);
     border-radius: var(--radius);
-    padding: 9px 10px 11px;
+    padding: 11px 12px 13px;
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 9px;
     min-width: 0;
   }
 
-  .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
-  .panel-head h2 { margin: 0; font-size: 14px; font-weight: 700; }
-  .panel-sub { font-size: 11px; color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px; }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .panel-head h2 { margin: 0; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .panel-sub {
+    font-size: 10.5px; font-weight: 600; color: var(--dim);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid var(--edge);
+  }
+  .panel-sub.is-live { color: #ffd0d8; background: var(--accent-soft); border-color: rgba(255,77,109,.35); }
+  .panel-sub.is-live::before {
+    content: ""; display: inline-block; vertical-align: 1px;
+    width: 6px; height: 6px; margin-right: 5px; border-radius: 50%;
+    background: var(--accent);
+  }
 
   .panel-section {
     border-top: 1px solid var(--edge);
-    padding-top: 7px;
+    padding-top: 9px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 7px;
   }
   .panel-section .hint { margin: 0; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
-  .rowline { display: flex; align-items: center; gap: 8px; }
-  .rowline .btn { flex: none; }
-  .rowline .field-label { flex: 1 1 auto; white-space: nowrap; }
-  .rowline input[type="range"] { flex: 1 1 auto; width: auto; min-width: 70px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+  .rowline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .rowline .btn:not(.icon) { flex: none; }
+  .rowline .field-label { flex: 1 1 auto; white-space: nowrap; min-width: 88px; }
+  .rowline input[type="range"] { flex: 1 1 90px; width: auto; min-width: 70px; }
   .rowline input[type="color"] { flex: 0 0 64px; width: 64px; height: 30px; }
   .panel-section:first-of-type { border-top: 0; padding-top: 0; }
   .panel-section h3 {
     margin: 0;
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 700;
-    letter-spacing: .07em;
+    letter-spacing: .08em;
     text-transform: uppercase;
-    color: var(--dim);
+    color: var(--faint);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .panel-section h3 .tag {
+    font-size: 9.5px; letter-spacing: 0; text-transform: none;
+    padding: 1px 6px; border-radius: 999px;
+    background: rgba(255,255,255,.06); color: var(--dim);
   }
 
-  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
   .field-label {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
     font-size: 11px; color: var(--dim);
   }
   .field-label b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
-  .hint { font-size: 10.5px; color: var(--faint); line-height: 1.45; margin: 2px 0 0; }
+  .hint { font-size: 10.5px; color: var(--faint); line-height: 1.5; margin: 2px 0 0; }
   .hint.is-hidden { display: none; }
+  .hint code { font-size: 10px; padding: 1px 4px; border-radius: 4px; background: rgba(255,255,255,.06); }
+
+  /* small inline keyboard hint */
+  .kbd {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 16px; height: 16px; padding: 0 4px;
+    border-radius: 4px;
+    border: 1px solid var(--edge-strong);
+    background: rgba(255,255,255,.06);
+    font-family: inherit; font-size: 9.5px; font-weight: 700; color: var(--dim);
+    vertical-align: 1px;
+  }
 
   /* buttons */
   .btn {
@@ -321,13 +553,13 @@
     font-size: 12px;
     font-weight: 600;
     border-radius: 10px;
-    padding: 7px 10px;
+    padding: 7px 11px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     cursor: pointer;
-    min-height: 32px;
+    min-height: 34px;
     transition: background .15s, border-color .15s, transform .1s, opacity .15s;
     white-space: nowrap;
   }
@@ -338,14 +570,16 @@
   .btn.primary:hover:not([disabled]) { background: #ff6280; }
   .btn.ghost { background: transparent; }
   .btn.danger { background: #2a1418; border-color: rgba(255,77,109,.4); color: #ffb3c0; }
-  .btn.icon { width: 34px; padding: 8px; flex: none; }
+  .btn.icon { width: 36px; padding: 8px; flex: none; }
   .btn.icon svg { width: 16px; height: 16px; }
   .btn svg { width: 14px; height: 14px; flex: none; }
   .btn.full { width: 100%; }
+  .btn.small { font-size: 11px; min-height: 28px; padding: 4px 9px; }
+  .btn.is-on { border-color: rgba(255,77,109,.55); background: var(--accent-soft); color: #ffd0d8; }
 
   /* transport row */
   .transport { display: flex; align-items: center; gap: 8px; }
-  .transport .btn { flex: none; }
+  .transport .btn:not(.icon) { flex: none; }
   .transport .time { flex: none; font-size: 10.5px; color: var(--dim); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .transport .hint { flex: none; margin: 0; }
 
@@ -353,7 +587,7 @@
   input[type="range"] {
     appearance: none;
     width: 100%;
-    height: 20px;
+    height: 22px;
     background: transparent;
     cursor: pointer;
     margin: 0;
@@ -365,15 +599,17 @@
   }
   input[type="range"]::-webkit-slider-thumb {
     appearance: none;
-    width: 14px; height: 14px;
-    margin-top: -4px;
+    width: 16px; height: 16px;
+    margin-top: -5px;
     border-radius: 50%;
     background: var(--accent);
     border: 2px solid #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,.4);
+    box-shadow: 0 1px 5px rgba(0,0,0,.45);
+    transition: transform .12s;
   }
+  input[type="range"]:hover:not([disabled])::-webkit-slider-thumb { transform: scale(1.12); }
   input[type="range"]::-moz-range-track { height: 6px; border-radius: 4px; background: rgba(255,255,255,.14); }
-  input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; }
+  input[type="range"]::-moz-range-thumb { width: 13px; height: 13px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; }
   input[type="range"].progress::-webkit-slider-runnable-track {
     background: linear-gradient(90deg, var(--accent) var(--fill, 0%), rgba(255,255,255,.14) var(--fill, 0%));
   }
@@ -411,7 +647,7 @@
     align-items: center;
     justify-content: center;
     gap: 3px;
-    padding: 9px;
+    padding: 12px 9px;
     border: 1.5px dashed rgba(255,255,255,.18);
     border-radius: 11px;
     background: rgba(255,255,255,.03);
@@ -419,12 +655,19 @@
     font-size: 11px;
     color: var(--dim);
     cursor: pointer;
-    transition: border-color .15s, background .15s;
+    transition: border-color .15s, background .15s, padding .15s;
   }
   .drop:hover { border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.05); }
   .drop.is-drag { border-color: var(--accent); background: var(--accent-soft); }
   .drop .big { font-size: 12px; font-weight: 600; color: var(--ink); }
   .drop svg { width: 18px; height: 18px; opacity: .8; }
+  /* once a clip is loaded the source section collapses to a slim "replace" row */
+  .drop.is-compact { flex-direction: row; padding: 7px 9px; gap: 7px; font-size: 10.5px; }
+  .drop.is-compact .big { font-size: 11px; }
+  .drop.is-compact .sub { display: none; }
+  .drop.is-compact svg { width: 14px; height: 14px; }
+  .source-tabs-row { display: flex; align-items: center; gap: 6px; }
+  .source-tabs-row .seg { flex: 1 1 auto; }
 
   .url-row { display: flex; gap: 6px; align-items: stretch; }
   .url-row input {
@@ -474,15 +717,55 @@
   }
   .device-btn.is-active { border-color: rgba(255,77,109,.6); background: var(--accent-soft); color: var(--ink); }
 
-  /* footer */
+  /* footer: secondary settings, collapsed by default so the workflow stays the focus */
   .footer-panel {
+    position: sticky;
+    bottom: 0;
+    z-index: 22;
     background: var(--panel);
     border: 1px solid var(--edge);
     border-radius: var(--radius);
-    padding: 12px 14px;
+    padding: 0;
+    overflow: hidden;
+  }
+  .footer-summary {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .footer-summary::-webkit-details-marker { display: none; }
+  .footer-summary:hover { background: rgba(255,255,255,.02); }
+  .footer-summary h2 {
+    margin: 0;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--dim);
+  }
+  .footer-summary .chev {
+    width: 16px; height: 16px; flex: none;
+    color: var(--dim);
+    transition: transform .18s;
+  }
+  .footer-panel[open] .footer-summary .chev { transform: rotate(90deg); }
+  .footer-peek {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 11px; color: var(--dim); font-variant-numeric: tabular-nums;
+  }
+  .footer-peek .swatch {
+    width: 14px; height: 14px; border-radius: 4px;
+    border: 1px solid rgba(255,255,255,.28);
+    flex: none;
+  }
+  .footer-peek .sep { width: 1px; height: 12px; background: var(--edge-strong); }
+  .footer-grid {
     display: grid;
-    grid-template-columns: 1fr 1.2fr 1fr;
-    gap: 16px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    padding: 2px 14px 14px;
+    border-top: 1px solid var(--edge);
+    padding-top: 13px;
   }
   .footer-col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
   .footer-col h3 {
@@ -525,8 +808,11 @@
     flex-direction: column;
     gap: 12px;
   }
+  .export-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
   .export-card h2 { margin: 0; font-size: 16px; }
+  .export-pct { font-size: 12px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
   .export-card p { margin: 0; font-size: 12px; color: var(--dim); line-height: 1.5; }
+  .export-card .export-note { font-size: 10.5px; color: var(--faint); text-align: center; }
   .export-bar {
     height: 8px;
     border-radius: 4px;
@@ -575,7 +861,8 @@
   .toast {
     position: fixed;
     left: 50%;
-    bottom: 22px;
+    /* clear of the sticky settings bar at the bottom */
+    bottom: 62px;
     transform: translate(-50%, 10px);
     max-width: min(70vw, 420px);
     padding: 10px 15px;
@@ -607,10 +894,91 @@
   }
   #export-stage video { width: 640px; height: 360px; }
 
+  /* tooltips for icon-only buttons (native title is slow to appear) */
+  [data-tip] { position: relative; }
+  [data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 7px);
+    transform: translate(-50%, 3px);
+    padding: 5px 8px;
+    border-radius: 7px;
+    background: rgba(28,34,48,.98);
+    border: 1px solid var(--edge-strong);
+    box-shadow: 0 8px 22px rgba(0,0,0,.45);
+    font-size: 10.5px; font-weight: 600; color: var(--ink);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .12s, transform .12s;
+    z-index: 60;
+    /* never let a tooltip widen the page: cap it and pull it back on-screen */
+    max-width: min(240px, 40vw);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transform: translate(-50%, 3px);
+  }
+  [data-tip]:hover::after, [data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+  /* buttons sitting in a panel row: drop the tooltip below so it never covers
+     the control directly above them */
+  .panel-section .rowline [data-tip]::after,
+  .footer-col .rowline [data-tip]::after {
+    bottom: auto;
+    top: calc(100% + 7px);
+    transform: translate(-50%, -3px);
+  }
+  .panel-section .rowline [data-tip]:hover::after,
+  .footer-col .rowline [data-tip]:hover::after { transform: translate(-50%, 0); }
+
+  /* right-hand buttons: anchor the tooltip to their right edge instead of centre */
+  .header-actions [data-tip]::after,
+  .stage-tools [data-tip]::after,
+  .strip-export [data-tip]::after,
+  .source-tabs-row [data-tip]::after,
+  .panel-section .rowline [data-tip]:last-of-type::after {
+    left: auto;
+    right: 0;
+    transform: translate(0, 3px);
+  }
+  .header-actions [data-tip]:hover::after,
+  .stage-tools [data-tip]:hover::after,
+  .strip-export [data-tip]:hover::after,
+  .source-tabs-row [data-tip]:hover::after,
+  .panel-section .rowline [data-tip]:last-of-type:hover::after { transform: translate(0, 0); }
+
   /* narrow windows: panels stack under videos */
+  @media (max-width: 1240px) {
+    .steps { display: none; }
+  }
   @media (max-width: 1020px) {
     .row-grid { grid-template-columns: 1fr; }
-    .footer-panel { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .brand p { display: none; }
+    .review-strip { flex-wrap: wrap; }
+    .review-strip .transport { flex: 1 1 100%; }
+    .strip-export { flex: 1 1 100%; }
+    .strip-export .btn { flex: 1; }
+  }
+  @media (max-width: 640px) {
+    .workspace { padding: 10px 12px 16px; }
+    .app-header { padding: 8px 12px; }
+    .status-chip { display: none; }
+    /* anchor tooltips to the viewport so they can never widen the page */
+    [data-tip]::after {
+      position: fixed;
+      left: 8px; right: 8px;
+      bottom: 76px;
+      transform: translateY(3px);
+      text-align: center;
+      white-space: normal;
+    }
+    [data-tip]:hover::after, [data-tip]:focus-visible::after { transform: translateY(0); }
+    .cell-empty .lede { font-size: 11.5px; }
+    .footer-peek { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
   }
 </style>
 </head>
@@ -622,12 +990,23 @@
       <div class="logo">◧</div>
       <div>
         <h1>Mirror Practice</h1>
-        <p>Reference clip above, your take below — trim, crop, review, export.</p>
+        <p>Rehearse against a reference clip</p>
       </div>
     </div>
+
+    <nav class="steps" aria-label="Workflow">
+      <button class="step" data-step="ref" id="step-ref" title="Load the reference clip"><span class="num">1</span>Reference</button>
+      <span class="step-sep"></span>
+      <button class="step" data-step="take" id="step-take" title="Record your take"><span class="num">2</span>Record</button>
+      <span class="step-sep"></span>
+      <button class="step" data-step="review" id="step-review" title="Review both clips together"><span class="num">3</span>Review</button>
+      <span class="step-sep"></span>
+      <button class="step" data-step="export" id="step-export" title="Download the merged video"><span class="num">4</span>Export</button>
+    </nav>
+
     <div class="header-actions">
       <span class="status-chip" id="status-chip"><span class="dot"></span><span id="status-text">Ready</span></span>
-      <button class="btn ghost" id="btn-reset">Reset session</button>
+      <button class="btn ghost small" id="btn-reset" data-tip="Clear clips and restore default settings">Reset session</button>
     </div>
   </header>
 
@@ -635,13 +1014,45 @@
 
     <!-- ═══════════ row 1: reference stage + its panel ═══════════ -->
     <div class="row-grid">
-      <div class="cell-wrap" id="ref-cell-wrap">
+      <div class="stage-col">
+        <div class="stage-head">
+          <h2 class="stage-title" id="ref-stage-title"><span class="num">1</span>Reference clip</h2>
+          <span class="stage-sub" id="ref-stage-sub">Load the clip you want to rehearse against</span>
+          <div class="stage-tools">
+            <button class="btn ghost small" id="btn-ref-replace" data-tip="Swap the reference clip">Replace</button>
+          </div>
+        </div>
+        <div class="cell-wrap" id="ref-cell-wrap">
         <div class="cell" id="ref-cell">
           <div class="media-layer" id="ref-layer"></div>
           <div class="cell-empty" id="ref-empty">
-            <span class="glyph">🎬</span>
-            <strong>No reference loaded</strong>
-            <span>Upload a video file or paste a YouTube / Vimeo / direct video URL in the panel beside this stage.</span>
+            <span class="glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2.5"/><path d="M15.5 10.5l4.2-2.6a.8.8 0 0 1 1.3.7v6.8a.8.8 0 0 1-1.3.7l-4.2-2.6z"/></svg>
+            </span>
+            <strong>Load a reference clip</strong>
+            <span class="lede">Drop a video anywhere on this stage, or paste a YouTube / Vimeo / direct link.</span>
+            <div class="empty-actions">
+              <button class="btn primary" id="btn-empty-upload">Choose a video</button>
+              <button class="btn ghost" id="btn-empty-url">Paste a link</button>
+            </div>
+          </div>
+          <div class="crop-overlay" id="ref-crop-overlay">
+            <div class="crop-shade" id="ref-shade-top"></div>
+            <div class="crop-shade" id="ref-shade-bottom"></div>
+            <div class="crop-shade" id="ref-shade-left"></div>
+            <div class="crop-shade" id="ref-shade-right"></div>
+            <div class="crop-box" id="ref-crop-box">
+              <span class="crop-handle nw" data-handle="nw"></span>
+              <span class="crop-handle ne" data-handle="ne"></span>
+              <span class="crop-handle sw" data-handle="sw"></span>
+              <span class="crop-handle se" data-handle="se"></span>
+              <span class="crop-label" id="ref-crop-box-label">100%</span>
+            </div>
+            <div class="crop-edit-hint" id="ref-crop-edit-hint">
+              <span>Drag to select the area to keep</span>
+              <span class="sep"></span>
+              <span class="muted"><span class="kbd">↵</span> apply · <span class="kbd">Esc</span> cancel</span>
+            </div>
           </div>
           <div class="cell-badge" id="ref-badge">
             <span class="dot"></span>
@@ -649,6 +1060,7 @@
             <span class="badge-time" id="ref-badge-time">--</span>
           </div>
         </div>
+      </div>
       </div>
 
       <aside class="panel panel-slot" id="ref-panel">
@@ -659,25 +1071,32 @@
 
         <section class="panel-section">
           <h3>Source</h3>
-          <div class="seg" role="tablist" aria-label="Reference source">
-            <button id="tab-upload" role="tab" aria-selected="true">Upload file</button>
-            <button id="tab-url" role="tab" aria-selected="false">Video URL</button>
-          </div>
-          <div class="pane is-active" id="pane-upload">
-            <div class="drop" id="drop" tabindex="0" role="button" aria-label="Upload a video file">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-              <span class="big">Click or drop a video</span>
-              <span>MP4, MOV, WebM — stays on your device</span>
+          <div class="source-tabs-row">
+            <div class="seg" role="tablist" aria-label="Reference source">
+              <button id="tab-upload" role="tab" aria-selected="true">Upload file</button>
+              <button id="tab-url" role="tab" aria-selected="false">Video URL</button>
             </div>
-            <input type="file" id="file-input" accept="video/*,.mp4,.mov,.webm,.m4v,.mkv,.avi" hidden>
+            <button class="btn ghost icon" id="btn-source-collapse" data-tip="Hide source options" aria-label="Hide source options" aria-expanded="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+            </button>
           </div>
-          <div class="pane" id="pane-url">
-            <div class="url-row">
-              <input type="url" id="url-input" placeholder="https://youtu.be/…" autocapitalize="off" autocorrect="off" spellcheck="false">
-              <button class="btn primary" id="btn-load-url">Load</button>
+          <div id="source-body">
+            <div class="pane is-active" id="pane-upload">
+              <div class="drop" id="drop" tabindex="0" role="button" aria-label="Upload a video file">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                <span class="big">Click or drop a video</span>
+                <span class="sub">MP4, MOV, WebM — stays on your device</span>
+              </div>
+              <input type="file" id="file-input" accept="video/*,.mp4,.mov,.webm,.m4v,.mkv,.avi" hidden>
             </div>
-            <div class="error-box" id="url-error"></div>
-            <p class="hint">YouTube &amp; Vimeo links embed official players. Direct <code>.mp4</code>/<code>.webm</code> links play natively. Embedded players cannot be downloaded.</p>
+            <div class="pane" id="pane-url">
+              <div class="url-row">
+                <input type="url" id="url-input" placeholder="Paste a YouTube, Vimeo or .mp4 link" autocapitalize="off" autocorrect="off" spellcheck="false">
+                <button class="btn primary" id="btn-load-url">Load</button>
+              </div>
+              <div class="error-box" id="url-error"></div>
+              <p class="hint">YouTube &amp; Vimeo links embed their official player. Direct <code>.mp4</code> / <code>.webm</code> links play natively and can be downloaded.</p>
+            </div>
           </div>
         </section>
 
@@ -695,9 +1114,9 @@
           </div>
           <div class="rowline">
             <div class="field-label">Trimmed <b id="trim-length">--</b></div>
-            <button class="btn ghost" id="btn-trim-reset" disabled>Full clip</button>
+            <button class="btn ghost small" id="btn-trim-reset" disabled data-tip="Use the whole clip">Full clip</button>
           </div>
-          <p class="hint">Recording limit follows the trimmed length.</p>
+          <p class="hint">Your take records for this length.</p>
         </section>
 
         <section class="panel-section">
@@ -709,13 +1128,16 @@
             <div class="field"><div class="field-label">Height <b id="crop-height-label">100%</b></div><input type="range" id="crop-height" min="10" max="100" step="1" value="100" disabled></div>
           </div>
           <div class="rowline">
-            <div class="field-label">Out <b id="ref-width-label">720 px</b></div>
-            <input type="range" id="ref-out-width" min="240" max="1920" step="10" value="720" disabled>
-            <button class="btn ghost" id="btn-crop-reset" disabled>Reset</button>
+            <div class="field-label">Output width <b id="ref-width-label">720 px</b></div>
+            <input type="range" id="ref-out-width" min="240" max="1920" step="10" value="720" disabled aria-label="Reference output width">
           </div>
           <div class="rowline">
-            <div class="field-label">Out height <b id="ref-out-height">405 px</b></div>
-            <span class="hint" style="margin:0">auto from crop aspect</span>
+            <button class="btn ghost small" id="btn-crop-draw" disabled data-tip="Select the area of the clip to keep">Crop</button>
+            <button class="btn ghost small is-hidden" id="btn-crop-cancel" disabled data-tip="Discard this selection (Esc)">Cancel</button>
+            <button class="btn ghost icon" id="btn-crop-reset" disabled data-tip="Remove the crop" aria-label="Reset crop">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+            </button>
+            <span class="hint" style="margin:0">Height <b id="ref-out-height">405 px</b> — from crop shape</span>
           </div>
           <p class="hint is-hidden" id="crop-hint">Crop is unavailable for embedded YouTube/Vimeo players.</p>
         </section>
@@ -728,13 +1150,13 @@
             <span class="time" id="ref-progress-time">00:00</span>
           </div>
           <div class="rowline">
-            <button class="btn ghost icon" id="btn-ref-mute" disabled title="Mute reference" aria-label="Mute reference">
+            <button class="btn ghost icon" id="btn-ref-mute" disabled data-tip="Mute reference audio" aria-label="Mute reference">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16 8l5 5m0-5l-5 5" stroke="currentColor" stroke-width="2" fill="none"/></svg>
             </button>
-            <button class="btn ghost icon" id="btn-ref-loop" disabled title="Loop reference" aria-label="Loop reference">
+            <button class="btn ghost icon" id="btn-ref-loop" disabled data-tip="Loop the trimmed reference" aria-label="Loop reference">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 7H9a4 4 0 0 0 0 8h8"/><path d="M15 4l3 3-3 3"/><path d="M9 13l-3 3 3 3"/></svg>
             </button>
-            <button class="btn ghost" id="btn-download-ref" disabled>Download</button>
+            <button class="btn ghost small" id="btn-download-ref" disabled data-tip="Save the trimmed reference">Download</button>
             <span class="hint" style="margin:0" id="ref-download-hint">trim + crop + resize</span>
           </div>
         </section>
@@ -748,7 +1170,15 @@
 
     <!-- ═══════════ row 2: take stage + its panel ═══════════ -->
     <div class="row-grid">
-      <div class="cell-wrap" id="take-cell-wrap">
+      <div class="stage-col">
+        <div class="stage-head">
+          <h2 class="stage-title" id="take-stage-title"><span class="num">2</span>Your take</h2>
+          <span class="stage-sub" id="take-stage-sub">Enable the camera, then record</span>
+          <div class="stage-tools">
+            <span class="hint" id="take-limit-hint" style="margin:0">Record limit <b id="rec-limit-inline">--</b></span>
+          </div>
+        </div>
+        <div class="cell-wrap" id="take-cell-wrap">
         <div class="cell" id="take-cell">
           <div class="media-layer" id="cam-layer">
             <video id="cam-video" autoplay muted playsinline></video>
@@ -757,10 +1187,14 @@
             <video id="take-video" playsinline></video>
           </div>
           <div class="cell-empty" id="cam-empty">
-            <span class="glyph">🤳</span>
-            <strong>Camera preview</strong>
-            <span>Enable the camera, then record a take. Recording stops at the trimmed reference length.</span>
-            <button class="btn primary" id="btn-enable-cam">Enable camera</button>
+            <span class="glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L8 6H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="12.5" r="3.4"/></svg>
+            </span>
+            <strong>Camera is off</strong>
+            <span class="lede">Turn on the camera to see yourself beside the reference. Recording stops automatically at the trimmed length.</span>
+            <div class="empty-actions">
+              <button class="btn primary" id="btn-enable-cam">Enable camera</button>
+            </div>
           </div>
           <div class="cell-badge" id="take-badge">
             <span class="dot"></span>
@@ -772,12 +1206,35 @@
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
           </div>
+          <div class="crop-overlay" id="take-crop-overlay">
+            <div class="crop-shade" id="take-shade-top"></div>
+            <div class="crop-shade" id="take-shade-bottom"></div>
+            <div class="crop-shade" id="take-shade-left"></div>
+            <div class="crop-shade" id="take-shade-right"></div>
+            <div class="crop-box" id="take-crop-box">
+              <span class="crop-handle nw" data-handle="nw"></span>
+              <span class="crop-handle ne" data-handle="ne"></span>
+              <span class="crop-handle sw" data-handle="sw"></span>
+              <span class="crop-handle se" data-handle="se"></span>
+              <span class="crop-label" id="take-crop-box-label">100%</span>
+            </div>
+            <div class="crop-edit-hint" id="take-crop-edit-hint">
+              <span>Drag to select the area to keep</span>
+              <span class="sep"></span>
+              <span class="muted"><span class="kbd">↵</span> apply · <span class="kbd">Esc</span> cancel</span>
+            </div>
+          </div>
           <div class="rec-overlay" id="rec-overlay">
             <div class="frame"></div>
             <div class="timer"><span class="dot"></span><span id="rec-timer">00:00</span></div>
             <div class="cap" id="rec-cap">of 00:00</div>
           </div>
+          <div class="countdown-overlay" id="countdown-overlay">
+            <div class="countdown-number" id="countdown-number">3</div>
+            <div class="countdown-label" id="countdown-label">Recording starts in…</div>
+          </div>
         </div>
+      </div>
       </div>
 
       <aside class="panel panel-slot" id="take-panel">
@@ -792,23 +1249,23 @@
           <div class="device-list" id="cam-device-list"></div>
           <div class="rowline">
             <div class="field-label">Record limit <b id="rec-limit">--</b></div>
-            <button class="btn ghost" id="btn-mirror">Mirror: off</button>
+            <button class="btn ghost small" id="btn-mirror" data-tip="Flip the preview so you see yourself as in a mirror">Mirror preview: off</button>
           </div>
         </section>
 
         <section class="panel-section">
-          <h3>Record</h3>
+          <h3>Record <span class="tag" id="record-state-tag">idle</span></h3>
           <div class="transport">
-            <button class="btn primary" id="btn-record" disabled>Record</button>
-            <button class="btn ghost icon" id="btn-stop" disabled title="Stop recording" aria-label="Stop recording">
+            <button class="btn primary" id="btn-record" disabled data-tip="Record a take (R)">Record</button>
+            <button class="btn ghost icon" id="btn-stop" disabled data-tip="Stop recording (R)" aria-label="Stop recording">
               <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
             </button>
-            <button class="btn ghost icon" id="btn-retake" disabled title="Retake" aria-label="Retake">
+            <button class="btn ghost icon" id="btn-retake" disabled data-tip="Discard this take and record again" aria-label="Retake">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
             </button>
             <span class="time" id="take-badge-mini">--</span>
           </div>
-          <p class="hint">Auto-stops at the trimmed length.</p>
+          <p class="hint">Stops by itself when the take reaches the trim length.</p>
         </section>
 
         <section class="panel-section">
@@ -820,13 +1277,16 @@
             <div class="field"><div class="field-label">Height <b id="tcrop-height-label">100%</b></div><input type="range" id="tcrop-height" min="10" max="100" step="1" value="100"></div>
           </div>
           <div class="rowline">
-            <div class="field-label">Out <b id="take-width-label">720 px</b></div>
-            <input type="range" id="take-out-width" min="240" max="1920" step="10" value="720">
-            <button class="btn ghost" id="btn-tcrop-reset">Reset</button>
+            <div class="field-label">Output width <b id="take-width-label">720 px</b></div>
+            <input type="range" id="take-out-width" min="240" max="1920" step="10" value="720" aria-label="Take output width">
           </div>
           <div class="rowline">
-            <div class="field-label">Out height <b id="take-out-height">540 px</b></div>
-            <span class="hint" style="margin:0">auto from crop aspect</span>
+            <button class="btn ghost small" id="btn-tcrop-draw" data-tip="Select the area of the take to keep">Crop</button>
+            <button class="btn ghost small is-hidden" id="btn-tcrop-cancel" data-tip="Discard this selection (Esc)">Cancel</button>
+            <button class="btn ghost icon" id="btn-tcrop-reset" data-tip="Remove the crop" aria-label="Reset crop">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+            </button>
+            <span class="hint" style="margin:0">Height <b id="take-out-height">540 px</b> — from crop shape</span>
           </div>
         </section>
 
@@ -837,48 +1297,80 @@
             <input type="range" class="progress" id="take-progress" min="0" max="1000" step="1" value="0" disabled>
             <span class="time" id="take-progress-time">00:00</span>
           </div>
-          <button class="btn ghost full" id="btn-download-take" disabled>Download take</button>
-          <p class="hint">Download applies crop and resize.</p>
+          <button class="btn ghost full" id="btn-download-take" disabled>Download take only</button>
+          <p class="hint">Applies crop and resize. Use <b>Export</b> below to save both clips together.</p>
         </section>
       </aside>
     </div>
 
-    <!-- ═══════════ review strip + footer ═══════════ -->
-    <div class="review-strip">
+    <!-- ═══════════ action bar: review + export ═══════════ -->
+    <div class="review-strip" id="action-bar">
       <div class="transport">
-        <button class="btn primary" id="btn-review" disabled>Play both</button>
-        <input type="range" class="progress" id="review-progress" min="0" max="1000" step="1" value="0" disabled>
+        <button class="btn primary" id="btn-review" disabled data-tip="Play the trimmed reference and your take together (Space)">Play both</button>
+        <input type="range" class="progress" id="review-progress" min="0" max="1000" step="1" value="0" disabled aria-label="Review position">
         <span class="time" id="review-time">00:00</span>
       </div>
-      <span class="strip-hint" id="review-hint">Trimmed reference and take play together.</span>
+      <span class="strip-hint" id="review-hint">Load a reference clip first.</span>
+      <div class="strip-divider"></div>
+      <div class="strip-export">
+        <div class="strip-meta">
+          <span>Merged video</span>
+          <span id="strip-export-meta"><b>--</b></span>
+        </div>
+        <button class="btn primary" id="btn-export-merged" disabled data-tip="Reference above, take below, with border (E)">Download merged</button>
+      </div>
     </div>
 
-    <footer class="footer-panel" id="footer">
-      <div class="footer-col">
-        <h3>Border between clips</h3>
-        <div class="rowline">
-          <div class="field-label">Size <b id="border-size-label">8 px</b></div>
-          <input type="range" id="border-size" min="0" max="40" step="1" value="8">
+    <details class="footer-panel" id="footer">
+      <summary class="footer-summary">
+        <h2>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          Layout &amp; timing settings
+        </h2>
+        <div class="footer-peek">
+          <span>Border <b id="peek-border">8 px</b></span>
+          <span class="swatch" id="peek-swatch" style="background:#ffffff"></span>
+          <span class="sep"></span>
+          <span>Delay <b id="peek-delay">0.5 s</b></span>
+          <span class="sep"></span>
+          <span id="peek-layout">Reference 720 px / take 720 px</span>
         </div>
-        <div class="rowline">
-          <div class="field-label">Color <b id="border-color-label">#ffffff</b></div>
-          <input type="color" id="border-color" value="#ffffff">
+      </summary>
+
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>Border between clips</h3>
+          <div class="rowline">
+            <div class="field-label">Thickness <b id="border-size-label">8 px</b></div>
+            <input type="range" id="border-size" min="0" max="40" step="1" value="8" aria-label="Border thickness">
+          </div>
+          <div class="rowline">
+            <div class="field-label">Color <b id="border-color-label">#ffffff</b></div>
+            <input type="color" id="border-color" value="#ffffff" aria-label="Border color">
+          </div>
+          <p class="hint">Drawn between the stages and baked into the merged download.</p>
         </div>
-        <p class="hint">Drawn between the stages and into the merged download.</p>
-      </div>
 
-      <div class="footer-col">
-        <h3>Layout summary</h3>
-        <p class="hint" id="layout-summary">Reference 720 px wide above, take 720 px wide below.</p>
-        <p class="hint" id="export-summary">Merged size appears once both clips are ready.</p>
-      </div>
+        <div class="footer-col">
+          <h3>Reference delay</h3>
+          <div class="rowline">
+            <div class="field-label">Starts <b id="delay-label">0.5 s</b> after the take</div>
+            <input type="range" id="delay" min="0" max="3" step="0.1" value="0.5" aria-label="Reference delay">
+          </div>
+          <p class="hint" id="delay-hint">Take plays first; reference joins 0.5 s later in Play both and merged download. Recording ignores this delay.</p>
+          <button class="btn ghost small" id="btn-delay-reset" style="align-self:flex-start">Reset to 0.5 s</button>
+        </div>
 
-      <div class="footer-col">
-        <h3>Export</h3>
-        <button class="btn primary full" id="btn-export-merged" disabled>Download merged video</button>
-        <p class="hint">Vertical stack, border, and mixed audio.</p>
+        <div class="footer-col">
+          <h3>Output summary</h3>
+          <p class="hint" id="layout-summary">Reference 720 px wide above, take 720 px wide below.</p>
+          <p class="hint" id="export-summary">Merged size appears once both clips are ready.</p>
+          <div class="rowline" style="margin-top:2px">
+            <button class="btn ghost small" id="btn-download-merged-alt" disabled data-tip="Same as Download merged below">Download merged video</button>
+          </div>
+        </div>
       </div>
-    </footer>
+    </details>
   </main>
 </div>
 
@@ -897,12 +1389,16 @@
 <!-- export progress -->
 <div class="export-overlay" id="export-overlay">
   <div class="export-card">
-    <h2 id="export-title">Exporting…</h2>
+    <div class="export-head">
+      <h2 id="export-title">Exporting…</h2>
+      <span class="export-pct" id="export-pct">0%</span>
+    </div>
     <div class="export-bar"><div id="export-fill"></div></div>
     <p id="export-status">Preparing clips…</p>
     <div class="row">
-      <button class="btn ghost" id="btn-export-cancel">Cancel</button>
+      <button class="btn ghost" id="btn-export-cancel">Cancel export</button>
     </div>
+    <p class="export-note">Keep this tab open until the download starts.</p>
   </div>
 </div>
 
@@ -964,6 +1460,7 @@
 
     playing: false,
     takePlaying: false,
+    reviewedOnce: false,
     mode: 'idle',
     mutedRef: false,
     loopRef: false,
@@ -972,11 +1469,126 @@
     borderSize: 8,
     borderColor: '#ffffff',
 
+    refDelay: 0.5,
+    countdownActive: false,
+    countdownValue: 3,
+
+    pendingTrim: null,
     resumeAt: 0,
     resumeFrom: 0,
   };
 
   const exportState = { active: false, cancel: false };
+  /* ═══════════════════ preferences cookie ═══════════════════ */
+  const PREFS_COOKIE = 'mirrorPracticePrefs';
+  const PREFS_VERSION = 2;
+
+  function readPrefs() {
+    try {
+      const all = document.cookie.split(';').map(c => c.trim());
+      const hit = all.find(c => c.startsWith(PREFS_COOKIE + '='));
+      if (!hit) return null;
+      const raw = decodeURIComponent(hit.slice(PREFS_COOKIE.length + 1));
+      const obj = JSON.parse(raw);
+      if (!obj || typeof obj !== 'object') return null;
+      return obj;
+    } catch { return null; }
+  }
+
+  function writePrefs() {
+    const payload = {
+      v: PREFS_VERSION,
+      refCrop: roundCrop(state.refCrop),
+      camCrop: roundCrop(state.camCrop),
+      refTrim: { start: round2(state.refTrim.start), end: round2(state.refTrim.end) },
+      refOutW: Number(state.refOutW),
+      camOutW: Number(state.camOutW),
+      borderSize: Number(state.borderSize),
+      borderColor: state.borderColor,
+      refDelay: round2(state.refDelay),
+      mutedRef: !!state.mutedRef,
+      loopRef: !!state.loopRef,
+      mirrorPreview: !!state.mirrorPreview,
+    };
+    const enc = encodeURIComponent(JSON.stringify(payload));
+    document.cookie = `${PREFS_COOKIE}=${enc}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+  }
+
+  const round2 = (v) => Math.round(v * 100) / 100;
+  const roundCrop = (c) => ({
+    x: round2(c.x), y: round2(c.y), w: round2(c.w), h: round2(c.h),
+  });
+
+  function clampCropObj(c) {
+    let w = clamp(Number(c.w), 0.1, 1);
+    let h = clamp(Number(c.h), 0.1, 1);
+    let x = clamp(Number(c.x), 0, 1 - w);
+    let y = clamp(Number(c.y), 0, 1 - h);
+    return { x, y, w, h };
+  }
+
+  function applyPrefs(prefs) {
+    if (!prefs) return false;
+    let touched = false;
+
+    if (prefs.refCrop) { state.refCrop = clampCropObj(prefs.refCrop); touched = true; }
+    if (prefs.camCrop) { state.camCrop = clampCropObj(prefs.camCrop); touched = true; }
+    if (Number.isFinite(Number(prefs.refOutW))) {
+      state.refOutW = clamp(Math.round(Number(prefs.refOutW)), 240, 1920);
+      refWidthEl.value = String(state.refOutW);
+      touched = true;
+    }
+    if (Number.isFinite(Number(prefs.camOutW))) {
+      state.camOutW = clamp(Math.round(Number(prefs.camOutW)), 240, 1920);
+      takeWidthEl.value = String(state.camOutW);
+      touched = true;
+    }
+    if (Number.isFinite(Number(prefs.borderSize))) {
+      state.borderSize = clamp(Math.round(Number(prefs.borderSize)), 0, 40);
+      borderSizeEl.value = String(state.borderSize);
+      touched = true;
+    }
+    if (typeof prefs.borderColor === 'string' && /^#[0-9a-f]{6}$/i.test(prefs.borderColor)) {
+      state.borderColor = prefs.borderColor.toLowerCase();
+      borderColorEl.value = state.borderColor;
+      touched = true;
+    }
+    if (Number.isFinite(Number(prefs.refDelay))) {
+      state.refDelay = clamp(round2(Number(prefs.refDelay)), 0, 3);
+      delayEl.value = String(state.refDelay);
+      touched = true;
+    }
+    if (typeof prefs.mutedRef === 'boolean') { state.mutedRef = prefs.mutedRef; touched = true; }
+    if (typeof prefs.loopRef === 'boolean') { state.loopRef = prefs.loopRef; touched = true; }
+    if (typeof prefs.mirrorPreview === 'boolean') { state.mirrorPreview = prefs.mirrorPreview; touched = true; }
+
+    // Trim is restored once a reference reports its duration (see finishReference).
+    state.pendingTrim = prefs.refTrim && Number.isFinite(Number(prefs.refTrim.start)) && Number.isFinite(Number(prefs.refTrim.end))
+      ? { start: Number(prefs.refTrim.start), end: Number(prefs.refTrim.end) }
+      : null;
+
+    writeCropInputs('crop', state.refCrop);
+    writeCropInputs('tcrop', state.camCrop);
+    return touched;
+  }
+
+  function restoreTrim(duration) {
+    const pending = state.pendingTrim;
+    state.pendingTrim = null;
+    if (!pending || !(duration > 0)) return false;
+    const start = clamp(pending.start, 0, Math.max(0, duration - 0.1));
+    const end = clamp(pending.end, Math.min(start + 0.1, duration), duration);
+    if (!(end - start > 0.05)) return false;
+    state.refTrim = { start, end };
+    return true;
+  }
+
+  function savePrefsDebounced() {
+    clearTimeout(prefsTimer);
+    prefsTimer = setTimeout(writePrefs, 260);
+  }
+  let prefsTimer = 0;
+
 
   /* ═══════════════════ DOM ═══════════════════ */
   const refCell = $('ref-cell');
@@ -1039,6 +1651,23 @@
   const takeProgressTime = $('take-progress-time');
   const btnDownloadTake = $('btn-download-take');
 
+  const delayEl = $('delay');
+  const delayLabel = $('delay-label');
+  const delayHint = $('delay-hint');
+  const btnDelayReset = $('btn-delay-reset');
+  const refCropOverlay = $('ref-crop-overlay');
+  const refCropBox = $('ref-crop-box');
+  const refCropBoxLabel = $('ref-crop-box-label');
+  const takeCropOverlay = $('take-crop-overlay');
+  const takeCropBox = $('take-crop-box');
+  const takeCropBoxLabel = $('take-crop-box-label');
+  const btnCropDraw = $('btn-crop-draw');
+  const btnTcropDraw = $('btn-tcrop-draw');
+  const btnCropCancel = $('btn-crop-cancel');
+  const btnTcropCancel = $('btn-tcrop-cancel');
+  const countdownOverlay = $('countdown-overlay');
+  const countdownNumber = $('countdown-number');
+  const countdownLabel = $('countdown-label');
   const borderSizeEl = $('border-size');
   const borderSizeLabel = $('border-size-label');
   const borderColorEl = $('border-color');
@@ -1057,12 +1686,36 @@
   const exportTitle = $('export-title');
   const exportFill = $('export-fill');
   const exportStatus = $('export-status');
+  const exportPct = $('export-pct');
   const btnExportCancel = $('btn-export-cancel');
   const exportStage = $('export-stage');
 
   const statusChip = $('status-chip');
   const statusText = $('status-text');
   const btnReset = $('btn-reset');
+
+  /* workflow chrome added for the friendlier pass */
+  const stepEls = {
+    ref: $('step-ref'), take: $('step-take'), review: $('step-review'), export: $('step-export'),
+  };
+  const refStageTitle = $('ref-stage-title');
+  const refStageSub = $('ref-stage-sub');
+  const takeStageTitle = $('take-stage-title');
+  const takeStageSub = $('take-stage-sub');
+  const btnRefReplace = $('btn-ref-replace');
+  const btnEmptyUpload = $('btn-empty-upload');
+  const btnEmptyUrl = $('btn-empty-url');
+  const btnSourceCollapse = $('btn-source-collapse');
+  const sourceBody = $('source-body');
+  const recordStateTag = $('record-state-tag');
+  const recLimitInline = $('rec-limit-inline');
+  const stripExportMeta = $('strip-export-meta');
+  const btnDownloadMergedAlt = $('btn-download-merged-alt');
+  const peekBorder = $('peek-border');
+  const peekDelay = $('peek-delay');
+  const peekLayout = $('peek-layout');
+  const peekSwatch = $('peek-swatch');
+  const footerPanel = $('footer');
 
   const tabUpload = $('tab-upload');
   const tabUrl = $('tab-url');
@@ -1189,6 +1842,8 @@
     state.refBlob = null;
     state.refTrim = { start: 0, end: 0 };
     state.refCrop = { x: 0, y: 0, w: 1, h: 1 };
+    // An open crop editor refers to the old clip; drop it.
+    if (cropEditing.ref) { cropEditing.ref = false; cropDraft.ref = null; syncCropButtons(); }
     refBadgeTime.textContent = '--';
     refSourceLabel.textContent = 'No clip loaded';
     clearTake();
@@ -1206,6 +1861,7 @@
     state.resumeAt = 0;
     state.resumeFrom = 0;
     state.takePlaying = false;
+    state.reviewedOnce = false;
     if (state.takeUrl) { URL.revokeObjectURL(state.takeUrl); state.takeUrl = null; }
     takeVideo.removeAttribute('src');
     takeVideo.load();
@@ -1222,6 +1878,7 @@
     state.ref.duration = duration;
     state.refReady = true;
     state.refTrim = { start: 0, end: duration };
+    const restored = restoreTrim(duration);
     refEmpty.classList.add('is-hidden');
     refBadgeTime.textContent = fmt(duration);
     refSourceLabel.textContent = label;
@@ -1229,7 +1886,9 @@
     updateRefLayout();
     updateUI();
     syncRefAudio();
-    toast(`Reference ready — ${fmt(duration)}`, 1600);
+    toast(restored
+      ? `Reference ready — ${fmt(duration)}; restored trim ${fmtTrim(state.refTrim.start)} → ${fmtTrim(state.refTrim.end)}`
+      : `Reference ready — ${fmt(duration)}`, 1800);
   }
 
   function loadNativeReference(url, label, blob) {
@@ -1480,7 +2139,7 @@
     trimStartLabel.textContent = fmtTrim(state.refTrim.start);
     trimEndLabel.textContent = fmtTrim(state.refTrim.end);
     trimLengthEl.textContent = enabled ? fmtTrim(trimDuration()) : '--';
-    recLimitEl.textContent = enabled && trimDuration() > 0 ? fmt(trimDuration()) : '--';
+    recLimitEl.textContent = enabled && trimDuration() > 0 ? fmtTrim(recordWindow()) : '--';
     refreshButtons();
     updateUI();
   }
@@ -1511,8 +2170,292 @@
   }
 
   function applyRefCrop() {
-    if (nativeVideo) applyCropStyle(nativeVideo, state.refCrop, false);
+    if (nativeVideo) applyCropStyle(nativeVideo, layoutCrop('ref'), false);
   }
+  /* ═══════════════════ crop rectangle overlays ═══════════════════
+     Cropping is a two-step edit:
+       1. "Crop" opens the editor — the stage shows the FULL frame so you can
+          see everything that is available, with the current crop as a draft.
+       2. Draw / move / resize, then "Apply" (or Enter) commits it, "Cancel"
+          (or Esc) throws the draft away. Nothing changes until then. */
+  const FULL_CROP = { x: 0, y: 0, w: 1, h: 1 };
+  const cropEditing = { ref: false, take: false };
+  const cropDraft = { ref: null, take: null };   // null = nothing drawn yet
+
+  const cropKey = (which) => (which === 'ref' ? 'refCrop' : 'camCrop');
+  const cropPrefixFor = (which) => (which === 'ref' ? 'crop' : 'tcrop');
+  const isFullCrop = (c) => c.x <= 0.001 && c.y <= 0.001 && c.w >= 0.999 && c.h >= 0.999;
+
+  /* What the stage should render: while editing, always the whole frame. */
+  function layoutCrop(which) {
+    if (cropEditing[which]) return FULL_CROP;
+    return state[cropKey(which)];
+  }
+
+  /* What the rectangle should show: the draft while editing, else the crop. */
+  function overlayCrop(which) {
+    if (!cropEditing[which]) return state[cropKey(which)];
+    return cropDraft[which] || null;
+  }
+
+  function setCropShades(shades, crop, mirrored) {
+    const [top, bottom, left, right] = shades;
+    const effX = mirrored ? (1 - crop.x - crop.w) : crop.x;
+    const px = effX * 100;
+    const py = crop.y * 100;
+    const pw = crop.w * 100;
+    const ph = crop.h * 100;
+    top.style.left = '0%'; top.style.width = '100%'; top.style.top = '0%'; top.style.height = `${py}%`;
+    bottom.style.left = '0%'; bottom.style.width = '100%'; bottom.style.top = `${py + ph}%`; bottom.style.height = `${100 - py - ph}%`;
+    left.style.left = '0%'; left.style.width = `${px}%`; left.style.top = `${py}%`; left.style.height = `${ph}%`;
+    right.style.left = `${px + pw}%`; right.style.width = `${100 - px - pw}%`; right.style.top = `${py}%`; right.style.height = `${ph}%`;
+    const hideTop = py < 0.05, hideBottom = 100 - py - ph < 0.05;
+    const hideLeft = px < 0.05, hideRight = 100 - px - pw < 0.05;
+    top.classList.toggle('is-hidden', hideTop);
+    bottom.classList.toggle('is-hidden', hideBottom);
+    left.classList.toggle('is-hidden', hideLeft);
+    right.classList.toggle('is-hidden', hideRight);
+  }
+
+  function renderCropBox(box, labelEl, crop, mirrored, active) {
+    const effX = mirrored ? (1 - crop.x - crop.w) : crop.x;
+    box.style.left = `${effX * 100}%`;
+    box.style.top = `${crop.y * 100}%`;
+    box.style.width = `${crop.w * 100}%`;
+    box.style.height = `${crop.h * 100}%`;
+    box.classList.toggle('is-hidden', !active);
+    labelEl.textContent = `${Math.round(crop.w * 100)}% × ${Math.round(crop.h * 100)}%`;
+  }
+
+  function refreshCropOverlays() {
+    const refMirror = false;
+    const takeMirror = false; // take stage shows the recorded frame, never mirrored
+    const refActive = cropEditing.ref;
+    const takeActive = cropEditing.take;
+    refCropOverlay.classList.toggle('is-hidden', !refActive);
+    takeCropOverlay.classList.toggle('is-hidden', !takeActive);
+    refCropOverlay.classList.toggle('is-active', refActive);
+    takeCropOverlay.classList.toggle('is-active', takeActive);
+
+    const draw = (which, overlay, box, labelEl, shades, mirrored) => {
+      if (!cropEditing[which]) return;
+      const crop = cropDraft[which];
+      // No rectangle until the user draws one — the whole frame stays usable.
+      const hasRect = !!crop;
+      box.classList.toggle('is-hidden', !hasRect);
+      if (!hasRect) {
+        shades.forEach(s => s.classList.add('is-hidden'));
+        return;
+      }
+      setCropShades(shades, crop, mirrored);
+      renderCropBox(box, labelEl, crop, mirrored, true);
+    };
+
+    draw('ref', refCropOverlay, refCropBox, refCropBoxLabel,
+      [$('ref-shade-top'), $('ref-shade-bottom'), $('ref-shade-left'), $('ref-shade-right')], refMirror);
+    draw('take', takeCropOverlay, takeCropBox, takeCropBoxLabel,
+      [$('take-shade-top'), $('take-shade-bottom'), $('take-shade-left'), $('take-shade-right')], takeMirror);
+  }
+
+  /* ── crop editor lifecycle ─────────────────────────────── */
+  function syncCropButtons() {
+    const pairs = [
+      { which: 'ref', btn: btnCropDraw, cancel: btnCropCancel },
+      { which: 'take', btn: btnTcropDraw, cancel: btnTcropCancel },
+    ];
+    pairs.forEach(({ which, btn, cancel }) => {
+      if (!btn) return;
+      const editing = cropEditing[which];
+      btn.textContent = editing ? 'Apply' : 'Crop';
+      btn.classList.toggle('primary', editing);
+      btn.classList.toggle('ghost', !editing);
+      // In the editor the on-stage hint already explains the keys, so the
+      // tooltip is only useful on the idle "Crop" button.
+      if (editing) delete btn.dataset.tip;
+      else btn.dataset.tip = which === 'ref'
+        ? 'Select the area of the clip to keep'
+        : 'Select the area of the take to keep';
+      if (cancel) cancel.classList.toggle('is-hidden', !editing);
+      if (cancel) cancel.disabled = !editing;
+    });
+  }
+
+  function relayoutCropStage(which) {
+    if (which === 'ref') updateRefLayout();
+    else updateTakeLayout();
+  }
+
+  function beginCropEdit(which) {
+    if (cropEditing[which]) return;
+    stopAllPlayback();
+    const committed = state[cropKey(which)];
+    cropEditing[which] = true;
+    // Existing crop → show it on the full frame so it can be adjusted.
+    // No crop yet → start with nothing drawn, as the user expects.
+    cropDraft[which] = isFullCrop(committed) ? null : { ...committed };
+    writeCropInputs(cropPrefixFor(which), cropDraft[which] || FULL_CROP);
+    syncCropButtons();
+    relayoutCropStage(which);
+    refreshCropOverlays();
+    updateUI();
+    toast(cropDraft[which]
+      ? 'Adjust the rectangle, then Apply (Enter) or Cancel (Esc).'
+      : 'Drag on the video to select the area to keep, then Apply (Enter).', 2600);
+  }
+
+  function cancelCropEdit(which, quiet) {
+    if (!cropEditing[which]) return;
+    cropEditing[which] = false;
+    cropDraft[which] = null;
+    writeCropInputs(cropPrefixFor(which), state[cropKey(which)]);
+    syncCropButtons();
+    relayoutCropStage(which);
+    refreshCropOverlays();
+    updateUI();
+    if (!quiet) toast('Crop cancelled — the previous framing is unchanged.', 1800);
+  }
+
+  function applyCropEdit(which) {
+    if (!cropEditing[which]) return false;
+    const draft = cropDraft[which];
+    if (!draft) {
+      toast('Drag a rectangle on the video first, or press Esc to cancel.', 2600);
+      return false;
+    }
+    state[cropKey(which)] = clampCropObj(draft);
+    cropEditing[which] = false;
+    cropDraft[which] = null;
+    writeCropInputs(cropPrefixFor(which), state[cropKey(which)]);
+    syncCropButtons();
+    relayoutCropStage(which);
+    refreshCropOverlays();
+    updateUI();
+    savePrefsDebounced();
+    toast('Crop applied.', 1600);
+    return true;
+  }
+
+  /* Pointer-driven crop rectangle, active only while the editor is open.
+     Drag on empty space → draw a new rectangle.
+     Drag inside the rectangle → move it.  Drag a corner handle → resize it. */
+  function installCropDragger(which, overlay, box, labelEl) {
+    const prefix = cropPrefixFor(which);
+    const mirrored = false;
+    let mode = null;      // 'draw' | 'move' | 'resize'
+    let handle = null;
+    let origin = null;    // pointer origin in overlay fractions
+    let startCrop = null;
+
+    const fracFromEvent = (e) => {
+      const r = overlay.getBoundingClientRect();
+      return {
+        x: clamp((e.clientX - r.left) / Math.max(1, r.width), 0, 1),
+        y: clamp((e.clientY - r.top) / Math.max(1, r.height), 0, 1),
+      };
+    };
+
+    /* Live draft update: the stage keeps showing the full frame, so this only
+       repaints the rectangle and the numeric fields. */
+    function setDraft(crop, minSize) {
+      const m = minSize || 0.02;
+      const c = {
+        w: clamp(crop.w, m, 1),
+        h: clamp(crop.h, m, 1),
+      };
+      c.x = clamp(crop.x, 0, 1 - c.w);
+      c.y = clamp(crop.y, 0, 1 - c.h);
+      cropDraft[which] = c;
+      writeCropInputs(prefix, c);
+      refreshCropOverlays();
+      relayoutCropStage(which);   // keeps the output-size readout in sync
+    }
+
+    overlay.addEventListener('pointerdown', (e) => {
+      if (!cropEditing[which]) return;
+      if (e.button !== undefined && e.button !== 0) return;
+      e.preventDefault();
+      overlay.setPointerCapture(e.pointerId);
+      const target = e.target;
+      const h = target.closest ? target.closest('.crop-handle') : null;
+      const onBox = !!(target.closest && target.closest('.crop-box') === box);
+
+      if (h && cropDraft[which]) {
+        mode = 'resize';
+        handle = h.dataset.handle;
+        origin = fracFromEvent(e);
+        startCrop = { ...cropDraft[which] };
+        return;
+      }
+      if (onBox && cropDraft[which]) {
+        mode = 'move';
+        origin = fracFromEvent(e);
+        startCrop = { ...cropDraft[which] };
+        return;
+      }
+      // Empty space (or a fresh editor): start a new selection.
+      mode = 'draw';
+      origin = fracFromEvent(e);
+      startCrop = null;
+      setDraft({ x: origin.x, y: origin.y, w: 0.02, h: 0.02 });
+    });
+
+    overlay.addEventListener('pointermove', (e) => {
+      if (!mode || !cropEditing[which]) return;
+      e.preventDefault();
+      const p = fracFromEvent(e);
+      if (mode === 'draw') {
+        const x = Math.min(origin.x, p.x);
+        const y = Math.min(origin.y, p.y);
+        const w = Math.abs(p.x - origin.x);
+        const h = Math.abs(p.y - origin.y);
+        setDraft({ x, y, w, h });
+        return;
+      }
+      if (mode === 'move') {
+        const dx = p.x - origin.x;
+        const dy = p.y - origin.y;
+        setDraft({ x: startCrop.x + dx, y: startCrop.y + dy, w: startCrop.w, h: startCrop.h });
+        return;
+      }
+      if (mode === 'resize') {
+        const c = { ...startCrop };
+        const left = c.x;
+        const right = c.x + c.w;
+        const top = c.y;
+        const bottom = c.y + c.h;
+        const dx = p.x - origin.x;
+        const dy = p.y - origin.y;
+        if (handle === 'nw') { c.x = clamp(left + dx, 0, right - 0.02); c.y = clamp(top + dy, 0, bottom - 0.02); c.w = right - c.x; c.h = bottom - c.y; }
+        else if (handle === 'ne') { c.w = clamp(startCrop.w + dx, 0.02, 1 - left); c.y = clamp(top + dy, 0, bottom - 0.02); c.h = bottom - c.y; }
+        else if (handle === 'sw') { c.x = clamp(left + dx, 0, right - 0.02); c.w = right - c.x; c.h = clamp(startCrop.h + dy, 0.02, 1 - top); }
+        else if (handle === 'se') { c.w = clamp(startCrop.w + dx, 0.02, 1 - left); c.h = clamp(startCrop.h + dy, 0.02, 1 - top); }
+        setDraft(c);
+      }
+    });
+
+    const endDrag = (e) => {
+      if (!mode) return;
+      const wasDrawing = mode === 'draw';
+      mode = null;
+      handle = null;
+      origin = null;
+      startCrop = null;
+      try { overlay.releasePointerCapture(e.pointerId); } catch {}
+      // A stray click (no real drag) should not leave a sliver behind.
+      if (wasDrawing) {
+        const d = cropDraft[which];
+        if (d && (d.w < 0.03 || d.h < 0.03)) {
+          cropDraft[which] = null;
+          writeCropInputs(prefix, FULL_CROP);
+          refreshCropOverlays();
+        }
+      }
+    };
+    overlay.addEventListener('pointerup', endDrag);
+    overlay.addEventListener('pointercancel', endDrag);
+    overlay.addEventListener('pointerleave', (e) => { if (mode && e.pointerType !== 'mouse') endDrag(e); });
+  }
+
 
   function updateRefLayout() {
     if (!state.refReady || !state.ref) {
@@ -1526,22 +2469,27 @@
       return;
     }
     const dims = srcDims(nativeVideo);
-    const out = outDims(dims.w, dims.h, state.refCrop, state.refOutW);
-    refCell.style.aspectRatio = `${out.w} / ${out.h}`;
-    refOutHeightEl.textContent = `${out.h} px`;
-    refWidthLabel.textContent = `${out.w} px`;
+    // While the crop editor is open the stage shows the whole frame...
+    const stage = outDims(dims.w, dims.h, layoutCrop('ref'), state.refOutW);
+    refCell.style.aspectRatio = `${stage.w} / ${stage.h}`;
+    // ...but the readout follows the draft, so it updates while you drag.
+    const draft = outDims(dims.w, dims.h, overlayCrop('ref') || FULL_CROP, state.refOutW);
+    refOutHeightEl.textContent = `${draft.h} px`;
+    refWidthLabel.textContent = `${draft.w} px`;
     applyRefCrop();
   }
 
   function updateTakeLayout() {
     const visibleVideo = (state.takeBlob) ? takeVideo : camVideo;
     const dims = srcDims(visibleVideo, 640, 480);
-    const out = outDims(dims.w, dims.h, state.camCrop, state.camOutW);
-    takeCell.style.aspectRatio = `${out.w} / ${out.h}`;
-    takeOutHeightEl.textContent = `${out.h} px`;
-    takeWidthLabel.textContent = `${out.w} px`;
-    if (camVideo && camVideo.srcObject) applyCropStyle(camVideo, state.camCrop, state.mirrorPreview);
-    if (takeVideo.src) applyCropStyle(takeVideo, state.camCrop, false);
+    const crop = layoutCrop('take');
+    const stage = outDims(dims.w, dims.h, crop, state.camOutW);
+    takeCell.style.aspectRatio = `${stage.w} / ${stage.h}`;
+    const draft = outDims(dims.w, dims.h, overlayCrop('take') || FULL_CROP, state.camOutW);
+    takeOutHeightEl.textContent = `${draft.h} px`;
+    takeWidthLabel.textContent = `${draft.w} px`;
+    if (camVideo && camVideo.srcObject) applyCropStyle(camVideo, crop, state.mirrorPreview);
+    if (takeVideo.src) applyCropStyle(takeVideo, crop, false);
   }
 
   /* ═══════════════════ camera ═══════════════════ */
@@ -1677,6 +2625,9 @@
   let recTimerId = 0;
   let recTimeoutId = 0;
   let recLimit = 0;
+  let recWindow = 0;
+  let countdownTimer = 0;
+  let refStartTimerId = 0;
 
   function muteReferenceForRecording() {
     if (state.ref.kind === 'native' && nativeVideo) nativeVideo.muted = true;
@@ -1684,13 +2635,73 @@
     if (state.ref.kind === 'vimeo') vimeoCmd('setVolume', { value: 0 });
   }
 
+  // Recording window = trimmed reference length + the reference start delay.
+  // The delay does not shift the reference during recording (it starts together
+  // with the take); the window is simply long enough that the delayed reference
+  // still fits inside the take when played back.
+  function recordWindow() {
+    return trimDuration() + Math.max(0, state.refDelay);
+  }
+
+  function refStartOffset() {
+    return Math.max(0, state.refDelay);
+  }
+
   function startRecording() {
     if (!state.refReady || trimDuration() <= 0) { toast('Trim the reference to a positive length first.', 2600); return; }
     if (!state.camStream) { toast('Enable the camera first.', 2200); return; }
     const mime = pickMime();
+
+    recLimit = trimDuration();
+    recWindow = recordWindow();
+    state.recording = true;
+    state.mode = 'record';
+    state.countdownActive = true;
+    state.countdownValue = 3;
+
+    // 3-2-1 countdown before the recorder and the reference start.
+    let count = 3;
+    countdownOverlay.classList.add('is-on');
+    countdownLabel.textContent = 'Recording starts in…';
+    showCountdown(count);
+    updateUI();
+    refreshButtons();
+
+    const tick = () => {
+      count -= 1;
+      if (count > 0) {
+        state.countdownValue = count;
+        showCountdown(count);
+        return;
+      }
+      clearInterval(countdownTimer);
+      countdownTimer = 0;
+      state.countdownActive = false;
+      countdownOverlay.classList.remove('is-on');
+      beginRecording(mime);
+    };
+    clearInterval(countdownTimer);
+    countdownTimer = setInterval(tick, 1000);
+  }
+
+  function showCountdown(n) {
+    countdownNumber.textContent = String(n);
+    countdownNumber.classList.remove('pop');
+    void countdownNumber.offsetWidth;
+    countdownNumber.classList.add('pop');
+    countdownLabel.textContent = n > 1 ? `Recording starts in ${n}…` : 'Recording starts now';
+    updateUI();
+  }
+
+  function beginRecording(mime) {
     try {
       recorder = mime ? new MediaRecorder(state.camStream, { mimeType: mime, videoBitsPerSecond: 2500000 }) : new MediaRecorder(state.camStream);
     } catch {
+      recorder = null;
+      state.recording = false;
+      state.mode = 'idle';
+      updateUI();
+      refreshButtons();
       toast('This browser cannot record video.', 2600);
       return;
     }
@@ -1699,34 +2710,37 @@
     recorder.onerror = () => toast('Recording failed. Try again.', 2600);
     const stopPromise = new Promise((resolve) => { recorder.onstop = resolve; });
 
-    recLimit = trimDuration();
-    state.recording = true;
-    state.mode = 'record';
     recStartTime = performance.now();
     recorder.start(250);
 
+    // During recording the reference starts together with the take (delay is
+    // playback-only); the window already includes the delay.
     seekReference(state.refTrim.start);
     muteReferenceForRecording();
-    setTimeout(() => { if (state.recording) playReference(); }, 180);
+
+    clearTimeout(refStartTimerId);
+    refStartTimerId = setTimeout(() => {
+      if (state.recording) playReference();
+    }, 180);
 
     clearInterval(recTimerId);
     recTimerId = setInterval(() => {
-      const el = Math.max(0, Math.min(recLimit, (performance.now() - recStartTime) / 1000));
-      recTimer.textContent = fmt(el);
-      recCap.textContent = 'of ' + fmt(recLimit);
+      const el = Math.max(0, Math.min(recWindow, (performance.now() - recStartTime) / 1000));
+      recTimer.textContent = fmtTrim(el);
+      recCap.textContent = 'of ' + fmtTrim(recWindow);
     }, 100);
 
     clearTimeout(recTimeoutId);
-    recTimeoutId = setTimeout(() => stopRecording(), Math.max(0, recLimit * 1000));
+    recTimeoutId = setTimeout(() => stopRecording(), Math.max(0, recWindow * 1000));
 
     updateUI();
     refreshButtons();
-    toast(`Recording — auto-stops at ${fmt(recLimit)}`, 2000);
+    toast(`Recording — stops at ${fmtTrim(recWindow)} (trim ${fmtTrim(trimDuration())} + ${state.refDelay.toFixed(1)} s delay)`, 2600);
 
     stopPromise.then(async () => {
       clearInterval(recTimerId);
       clearTimeout(recTimeoutId);
-      const elapsed = Math.min(recLimit, Math.max(0, (performance.now() - recStartTime) / 1000));
+      const elapsed = Math.min(recWindow, Math.max(0, (performance.now() - recStartTime) / 1000));
       const blob = new Blob(recChunks, { type: recorder.mimeType || mime || 'video/webm' });
       const mimeStr = String(recorder && recorder.mimeType || '');
       state.takeHasAudio = /opus|mp4a|aac/i.test(mimeStr);
@@ -1759,7 +2773,23 @@
   }
 
   function stopRecording() {
-    if (!state.recording || !recorder) return;
+    if (!state.recording) return;
+    clearInterval(countdownTimer);
+    countdownTimer = 0;
+    clearTimeout(refStartTimerId);
+    refStartTimerId = 0;
+    state.countdownActive = false;
+    countdownOverlay.classList.remove('is-on');
+    if (!recorder) {
+      // Cancelled during the countdown: nothing was captured, so reset cleanly.
+      state.recording = false;
+      state.mode = 'idle';
+      state.countdownValue = 3;
+      updateUI();
+      refreshButtons();
+      toast('Recording cancelled.', 1600);
+      return;
+    }
     pauseReference();
     btnStop.disabled = true;
     btnRecord.disabled = true;
@@ -1954,11 +2984,18 @@
   let seekHoldUntil = 0;
   let reviewWatchId = 0;
 
+  // Review window: the take runs from 0 and the reference joins refDelay later.
+  // The window never exceeds the take length.
   function reviewWindow() {
     const refLen = trimDuration();
     const takeLen = Math.max(0, state.takeDuration);
-    if (takeLen > 0 && takeLen < refLen) return takeLen;
-    return refLen;
+    const delay = refStartOffset();
+    if (takeLen <= 0) return refLen + delay;
+    return Math.min(takeLen, delay + refLen);
+  }
+
+  function refSpanInReview() {
+    return Math.max(0, Math.min(trimDuration(), Math.max(0, state.takeDuration) - refStartOffset()));
   }
 
   function muteAllReferenceAudio() {
@@ -1985,13 +3022,20 @@
     state.resumeAt = 0;
     state.resumeFrom = startAt;
     state.playing = true;
+    state.reviewedOnce = true;
     state.mode = 'play';
     state.refPreviewActive = true;
 
     stopCameraTracks();
 
-    seekReference(state.refTrim.start + startAt);
-    takeVideo.currentTime = clamp(startAt, 0, Math.max(0, state.takeDuration));
+    // Reference position: at resume point, but shifted by the delay.
+    const delay = refStartOffset();
+    const refOffset = Math.max(0, startAt - delay);   // reference clock relative to trim start
+    const refAt = state.refTrim.start + Math.min(refOffset, trimDuration());
+    const takeAt = clamp(startAt, 0, Math.max(0, state.takeDuration));
+
+    seekReference(refAt);
+    takeVideo.currentTime = takeAt;
     takeVideo.playbackRate = 1;
     takeVideo.loop = false;
 
@@ -2002,37 +3046,44 @@
 
     seekHoldUntil = performance.now() + 1200;
     setTimeout(() => {
-      playReference();
+      // Take starts immediately; reference joins after the delay.
       const p = takeVideo.play();
       if (p && p.catch) p.catch(() => toast('Press Play both again to start playback.', 2200));
+      const refWait = Math.max(0, delay - startAt) * 1000;
       setTimeout(() => {
         if (!state.playing) return;
-        if (wantRefAudio) unmuteReferenceAudio();
-        if (wantTakeAudio) takeVideo.muted = false;
-        reviewWatch();
-      }, 500);
+        playReference();
+        setTimeout(() => {
+          if (!state.playing) return;
+          if (wantRefAudio) unmuteReferenceAudio();
+          if (wantTakeAudio) takeVideo.muted = false;
+          reviewWatch();
+        }, 500);
+      }, refWait);
     }, 220);
 
     clearInterval(reviewTickId);
     reviewTickId = setInterval(() => {
       if (!state.playing) return;
-      const rt = refCurrentTime() - state.refTrim.start;
+      const delay = refStartOffset();
       const tt = takeVideo.currentTime;
       const dur = reviewWindow();
       const takeDur = Math.max(0, state.takeDuration);
       const holding = performance.now() < seekHoldUntil;
       const active = !takeVideo.paused && !takeVideo.ended;
-      if (!holding && active && Number.isFinite(rt) && Number.isFinite(tt)) {
-        const drift = tt - rt;
+      const refT = refCurrentTime() - state.refTrim.start;      // reference clock within trim
+      const refInReview = refT + delay;                        // reference position on the review timeline
+      if (!holding && active && Number.isFinite(refT) && Number.isFinite(tt)) {
+        const drift = tt - refInReview;
         if (Math.abs(drift) > 0.45 && tt > 0.5 && tt < takeDur - 0.05) {
-          try { takeVideo.currentTime = clamp(rt, 0, takeDur); } catch {}
+          try { takeVideo.currentTime = clamp(refInReview, 0, takeDur); } catch {}
         }
       }
-      const frac = dur > 0 ? clamp(rt / dur, 0, 1) : 0;
+      const frac = dur > 0 ? clamp(tt / dur, 0, 1) : 0;
       reviewProgress.value = String(Math.round(frac * 1000));
       reviewProgress.style.setProperty('--fill', `${frac * 100}%`);
-      reviewTime.textContent = fmt(rt);
-      if (takeVideo.ended || (!holding && active && rt >= dur - 0.05)) handleReviewEnded();
+      reviewTime.textContent = fmt(tt);
+      if (takeVideo.ended || (!holding && active && tt >= dur - 0.05)) handleReviewEnded();
     }, 120);
 
     updateUI();
@@ -2081,7 +3132,7 @@
 
   function handleReviewEnded() {
     if (!state.playing) return;
-    state.resumeAt = Math.max(0, refCurrentTime() - state.refTrim.start);
+    state.resumeAt = Math.max(0, takeVideo.currentTime);
     state.resumeFrom = 0;
     pauseReference();
     try { takeVideo.pause(); } catch {}
@@ -2099,7 +3150,7 @@
 
   function stopReview(reason) {
     if (!state.playing) return;
-    state.resumeAt = Math.max(0, refCurrentTime() - state.refTrim.start);
+    state.resumeAt = Math.max(0, takeVideo.currentTime);
     state.resumeFrom = 0;
     pauseReference();
     try { takeVideo.pause(); } catch {}
@@ -2124,7 +3175,9 @@
     const dur = reviewWindow();
     const seconds = clamp(frac * dur, 0, Math.max(0, dur));
     seekHoldUntil = performance.now() + 900;
-    seekReference(state.refTrim.start + seconds);
+    const delay = refStartOffset();
+    const refT = clamp(Math.max(0, seconds - delay), 0, Math.max(0, trimDuration()));
+    seekReference(state.refTrim.start + refT);
     try { takeVideo.currentTime = clamp(seconds, 0, Math.max(0, state.takeDuration)); } catch {}
     reviewTime.textContent = fmt(seconds);
     reviewProgress.style.setProperty('--fill', `${frac * 100}%`);
@@ -2158,6 +3211,10 @@
     const refPart = refW > 0 ? `reference ${refW} px wide` : 'reference not sized';
     const takePart = state.takeBlob ? `take ${takeW} px wide` : `take ${takeW} px wide`;
     layoutSummary.textContent = `${refPart} above, ${takePart} below. Border ${state.borderSize} px ${state.borderColor}.`;
+    if (peekBorder) peekBorder.textContent = `${state.borderSize} px`;
+    if (peekSwatch) peekSwatch.style.background = state.borderColor;
+    if (peekDelay) peekDelay.textContent = `${state.refDelay.toFixed(1)} s`;
+    if (peekLayout) peekLayout.textContent = `Reference ${refW > 0 ? refW : '--'} px / take ${takeW} px`;
     if (state.refReady && state.takeBlob) {
       const refOut = state.ref.kind === 'native'
         ? outDims(srcDims(nativeVideo, 1280, 720).w, srcDims(nativeVideo, 1280, 720).h, state.refCrop, state.refOutW)
@@ -2168,15 +3225,108 @@
       const takeSrc = srcDims(takeVideo, 640, 480);
       const takeH = Math.max(30, Math.round(w / ((state.camCrop.w * takeSrc.w) / (state.camCrop.h * takeSrc.h))));
       const h = refH + state.borderSize + takeH;
-      exportSummary.textContent = `Merged output ≈ ${w}×${h} px, ${fmt(reviewWindow())} long.`;
+      const takeLen = Math.max(0, state.takeDuration);
+      const mergedDur = Math.min(takeLen, refStartOffset() + trimDuration());
+      const delayTooLong = refStartOffset() > takeLen - 0.05;
+      exportSummary.textContent = delayTooLong
+        ? `Merged output ≈ ${w}×${h} px — delay ${state.refDelay.toFixed(1)} s is longer than the ${fmtTrim(takeLen)} take; record again to include the reference.`
+        : `Merged output ≈ ${w}×${h} px, ${fmtTrim(mergedDur)} long.`;
+      if (stripExportMeta) {
+        stripExportMeta.innerHTML = `<b>${w}×${h}</b> px · ${fmtTrim(mergedDur)}`;
+      }
     } else {
       exportSummary.textContent = 'Merged size appears once both clips are ready.';
+      if (stripExportMeta) {
+        stripExportMeta.textContent = !state.refReady ? 'Waiting for reference'
+          : !state.takeBlob ? 'Waiting for your take' : 'Not ready';
+      }
     }
   }
 
   /* ═══════════════════ UI state ═══════════════════ */
   function isProviderRef() {
     return !!(state.ref && (state.ref.kind === 'youtube' || state.ref.kind === 'vimeo'));
+  }
+
+  /* ── next-step guidance ───────────────────────────────────
+     The workflow is linear: reference → camera → take → review → export.
+     Everything here is derived state, so it can run on every updateUI(). */
+  const NEXT_STEPS = {
+    ref: 'Step 1 — load a reference clip to begin.',
+    trim: 'Trim the reference so there is something to record.',
+    camera: 'Step 2 — enable the camera, then record your take.',
+    record: 'Record your take (R). Recording stops at the trim length.',
+    review: 'Step 3 — play both clips together to check the timing.',
+    export: 'Step 4 — download the merged video (E).',
+  };
+
+  function currentStep() {
+    if (state.countdownActive || state.recording) return 'record';
+    if (!state.refReady) return 'ref';
+    if (!(trimDuration() > 0)) return 'ref';
+    if (!state.takeBlob) return 'take';
+    // Review stays the active step until both clips have actually been played
+    // together, so Export never looks like the next thing to do too early.
+    if (state.playing || !state.reviewedOnce) return 'review';
+    return 'export';
+  }
+
+  function nextStepHint() {
+    if (!state.refReady) return NEXT_STEPS.ref;
+    if (!(trimDuration() > 0)) return NEXT_STEPS.trim;
+    if (!state.camStream && !state.takeBlob) return NEXT_STEPS.camera;
+    if (!state.takeBlob) return NEXT_STEPS.record;
+    return NEXT_STEPS.export;
+  }
+
+  function paintStepTracker() {
+    const step = currentStep();
+    const order = ['ref', 'take', 'review', 'export'];
+    const done = {
+      ref: state.refReady,
+      take: !!state.takeBlob,
+      review: !!state.takeBlob && state.refReady,
+      export: false,
+    };
+    const currentIndex = order.indexOf(step);
+    order.forEach((key, i) => {
+      const el = stepEls[key];
+      if (!el) return;
+      const isDone = done[key] && i < currentIndex;
+      el.classList.toggle('is-done', isDone);
+      el.classList.toggle('is-current', i === currentIndex);
+      el.setAttribute('aria-current', i === currentIndex ? 'step' : 'false');
+    });
+
+    if (refStageTitle) {
+      refStageTitle.classList.toggle('is-current', step === 'ref');
+      refStageTitle.classList.toggle('is-done', done.ref && step !== 'ref');
+    }
+    if (takeStageTitle) {
+      takeStageTitle.classList.toggle('is-current', step === 'take' || step === 'record');
+      takeStageTitle.classList.toggle('is-done', done.take && step !== 'take' && step !== 'record');
+    }
+    if (btnRefReplace) btnRefReplace.classList.toggle('is-hidden', !state.refReady);
+  }
+
+  function paintStageSubs() {
+    if (refStageSub) {
+      if (!state.refReady) refStageSub.textContent = 'Load the clip you want to rehearse against';
+      else if (isProviderRef()) refStageSub.textContent = 'Embedded player — trim and crop unavailable';
+      else refStageSub.textContent = `${fmtTrim(trimDuration())} selected of ${fmtTrim(state.ref ? state.ref.duration : 0)}`;
+    }
+    if (takeStageSub) {
+      if (state.recording) takeStageSub.textContent = `Recording — up to ${fmtTrim(recWindow)}`;
+      else if (state.countdownActive) takeStageSub.textContent = `Starting in ${state.countdownValue}…`;
+      else if (state.takeBlob) takeStageSub.textContent = `Take recorded — ${fmtTrim(state.takeDuration)}`;
+      else if (state.camStream) takeStageSub.textContent = 'Camera live — press Record when ready';
+      else takeStageSub.textContent = 'Enable the camera, then record';
+    }
+    if (recordStateTag) {
+      recordStateTag.textContent = state.recording ? 'recording'
+        : state.countdownActive ? 'starting'
+          : state.takeBlob ? 'take saved' : 'idle';
+    }
   }
 
   function updateUI() {
@@ -2193,15 +3343,18 @@
       refBadgeTime.textContent = '--';
     }
 
-    if (state.recording) {
+    if (state.countdownActive) {
+      takeBadgeLabel.textContent = 'Starting';
+      takeBadgeTime.textContent = String(state.countdownValue);
+    } else if (state.recording) {
       takeBadgeLabel.textContent = 'Recording';
-      takeBadgeTime.textContent = fmt(recLimit);
+      takeBadgeTime.textContent = fmtTrim(recWindow);
     } else if (state.takeBlob) {
       takeBadgeLabel.textContent = 'Take';
-      takeBadgeTime.textContent = fmt(state.takeDuration);
+      takeBadgeTime.textContent = fmtTrim(state.takeDuration);
     } else if (state.camStream) {
       takeBadgeLabel.textContent = 'Camera preview';
-      takeBadgeTime.textContent = trimDuration() > 0 ? '≤ ' + fmt(trimDuration()) : '--';
+      takeBadgeTime.textContent = trimDuration() > 0 ? '≤ ' + fmtTrim(recordWindow()) : '--';
     } else {
       takeBadgeLabel.textContent = 'Camera';
       takeBadgeTime.textContent = '--';
@@ -2215,15 +3368,18 @@
     if (!state.camStream && !state.takeBlob && !state.recording) camEmpty.classList.remove('is-hidden');
     else camEmpty.classList.add('is-hidden');
 
-    recOverlay.classList.toggle('is-on', state.recording);
+    recOverlay.classList.toggle('is-on', state.recording && !state.countdownActive);
+    countdownOverlay.classList.toggle('is-on', state.countdownActive);
     takePlayOverlay.classList.toggle('is-on', !!state.takeBlob && idle && !state.takePlaying && !state.playing);
 
     $('ref-badge').classList.toggle('is-live', state.refPreviewActive && state.mode !== 'play');
-    $('take-badge').classList.toggle('is-live', state.recording);
+    $('take-badge').classList.toggle('is-live', state.recording || state.countdownActive);
 
-    takeBadgeMini.textContent = state.recording
-      ? `rec ${fmt(recLimit)}`
-      : state.takeBlob ? `take ${fmt(state.takeDuration)}` : trimDuration() > 0 ? `limit ${fmt(trimDuration())}` : '--';
+    takeBadgeMini.textContent = state.countdownActive
+      ? `starting ${state.countdownValue}`
+      : state.recording
+        ? `rec ${fmtTrim(recWindow)}`
+        : state.takeBlob ? `take ${fmtTrim(state.takeDuration)}` : trimDuration() > 0 ? `limit ${fmtTrim(recordWindow())}` : '--';
     btnCamEnable.textContent = state.camStream ? 'Reload camera' : 'Enable camera';
     btnEnableCam.textContent = state.camStream ? 'Reload camera' : 'Enable camera';
     btnMirror.textContent = 'Mirror preview: ' + (state.mirrorPreview ? 'on' : 'off');
@@ -2233,18 +3389,25 @@
     else takeSourceLabel.textContent = 'Camera idle';
 
     if (state.takeBlob && state.refReady) {
-      reviewHint.textContent = state.playing
-        ? 'Playing trimmed reference + take together.'
-        : `Window ${fmt(reviewWindow())} — trimmed reference and take play together.`;
-    } else if (!state.refReady) {
-      reviewHint.textContent = 'Load a reference clip first.';
+      const d = state.refDelay.toFixed(1);
+      if (state.refDelay > 0) {
+        reviewHint.textContent = state.playing
+          ? `Take playing; reference joins after ${d} s.`
+          : `Window ${fmtTrim(reviewWindow())} — take first, reference +${d} s.`;
+      } else {
+        reviewHint.textContent = state.playing
+          ? 'Take and reference playing together.'
+          : `Window ${fmtTrim(reviewWindow())} — take and reference together.`;
+      }
     } else {
-      reviewHint.textContent = 'Record a take first.';
+      // Nothing to compare yet: tell the user exactly what unlocks this step.
+      reviewHint.textContent = nextStepHint();
     }
 
     let status = 'Ready';
     let chipClass = '';
     if (exportState.active) { status = 'Exporting'; chipClass = 'is-active'; }
+    else if (state.countdownActive) { status = `Starting in ${state.countdownValue}`; chipClass = 'is-active'; }
     else if (state.recording) { status = 'Recording'; chipClass = 'is-active'; }
     else if (state.playing) { status = 'Reviewing'; chipClass = 'is-active'; }
     else if (state.takePlaying) { status = 'Playing take'; chipClass = 'is-active'; }
@@ -2264,16 +3427,43 @@
     }
 
     const cropAllowed = state.refReady && !isProviderRef();
-    ['crop-left', 'crop-top', 'crop-width', 'crop-height'].forEach(id => { $(id).disabled = !cropAllowed || !idle; });
-    btnCropReset.disabled = !cropAllowed || !idle;
+    // While the crop editor is open the sliders belong to the draft, so keep
+    // them usable even if playback is running behind it.
+    ['crop-left', 'crop-top', 'crop-width', 'crop-height'].forEach(id => {
+      $(id).disabled = !cropAllowed || (!idle && !cropEditing.ref);
+    });
+    btnCropReset.disabled = !cropAllowed || (!idle && !cropEditing.ref);
+    btnCropDraw.disabled = !(state.refReady && !isProviderRef()) || state.recording || exportState.active;
+    // Nothing to crop until the camera or a take exists.
+    btnTcropDraw.disabled = state.recording || exportState.active || (!state.camStream && !state.takeBlob);
     cropHint.classList.toggle('is-hidden', !isProviderRef());
     refWidthEl.disabled = !state.refReady || isProviderRef() || !idle;
+
+    delayLabel.textContent = `${state.refDelay.toFixed(1)} s`;
+    delayHint.textContent = state.refDelay > 0
+      ? `Take plays first; reference joins ${state.refDelay.toFixed(1)} s later in Play both and merged download. Recording starts them together and allows ${state.refDelay.toFixed(1)} s extra time.`
+      : 'Reference starts together with the take.';
+    btnDelayReset.disabled = exportState.active || state.recording || state.playing;
 
     updateDivider();
     updateRefLayout();
     updateTakeLayout();
     updateSummaries();
+    refreshCropOverlays();
     updateRefPlayLabel();
+    try {
+      paintStepTracker();
+      paintStageSubs();
+    } catch (err) {
+      // Guidance chrome must never be able to stall the core UI updates.
+      console.warn('guidance refresh failed', err);
+    }
+    if (recLimitInline) {
+      recLimitInline.textContent = trimDuration() > 0 ? fmtTrim(recordWindow()) : '--';
+    }
+    if (btnDownloadMergedAlt) {
+      btnDownloadMergedAlt.disabled = btnExportMerged.disabled;
+    }
   }
 
   function refreshButtons() {
@@ -2360,6 +3550,7 @@
   function showExport(title) {
     exportTitle.textContent = title;
     exportFill.style.width = '0%';
+    if (exportPct) exportPct.textContent = '0%';
     exportStatus.textContent = 'Preparing clips…';
     exportOverlay.classList.add('is-on');
   }
@@ -2369,7 +3560,9 @@
   }
 
   function setExportProgress(frac, text) {
-    exportFill.style.width = `${Math.round(clamp(frac, 0, 1) * 100)}%`;
+    const pct = Math.round(clamp(frac, 0, 1) * 100);
+    exportFill.style.width = `${pct}%`;
+    if (exportPct) exportPct.textContent = `${pct}%`;
     if (text) exportStatus.textContent = text;
   }
 
@@ -2405,6 +3598,7 @@
       const trimStart = state.refTrim.start;
       const trimLen = trimDuration();
       const takeLen = Math.max(0, state.takeDuration);
+      const delay = refStartOffset();
 
       let canvasW = 0, canvasH = 0;
       let refOut = null, takeOut = null;
@@ -2428,7 +3622,8 @@
         refOut = { w: canvasW, h: Math.max(30, Math.round(canvasW / refAspect)) };
         takeOut = { w: canvasW, h: Math.max(30, Math.round(canvasW / takeAspect)) };
         canvasH = refOut.h + state.borderSize + takeOut.h;
-        dur = Math.min(trimLen, takeLen);
+        // Merged playback: take from 0, reference joins refDelay seconds later.
+        dur = Math.min(takeLen, delay + trimLen);
       }
 
       if (dur <= 0) throw new Error('Nothing to export — check the trim and take length.');
@@ -2486,9 +3681,17 @@
 
       stopCameraTracks();
 
+      // Take starts immediately. In the merged export the reference joins
+      // refDelay seconds later; single-clip exports are unaffected.
       const playAll = async () => {
-        if (refObj) { try { await refObj.v.play(); } catch {} }
         if (takeObj) { try { await takeObj.v.play(); } catch {} }
+        if (refObj) {
+          const refWait = kind === 'merged' ? Math.max(0, delay) : 0;
+          setTimeout(() => {
+            if (exportState.cancel) return;
+            refObj.v.play().catch(() => {});
+          }, refWait * 1000);
+        }
       };
       await playAll();
 
@@ -2601,29 +3804,131 @@
   }
 
   function bindCrop(prefix, key, updateFn) {
+    const which = prefix === 'crop' ? 'ref' : 'take';
     [`${prefix}-left`, `${prefix}-top`, `${prefix}-width`, `${prefix}-height`].forEach(id => {
       $(id).addEventListener('input', () => {
-        const crop = cropFromInputs(prefix, state[key]);
+        // While the editor is open the sliders drive the draft, not the clip.
+        const base = cropEditing[which] ? (cropDraft[which] || FULL_CROP) : state[key];
+        const crop = cropFromInputs(prefix, base);
+        if (cropEditing[which]) {
+          cropDraft[which] = crop;
+          writeCropInputs(prefix, crop);
+          refreshCropOverlays();
+          return;
+        }
         state[key] = crop;
         writeCropInputs(prefix, crop);
         updateFn();
         updateUI();
+        savePrefsDebounced();
       });
     });
     const resetId = prefix === 'crop' ? 'btn-crop-reset' : 'btn-tcrop-reset';
     $(resetId).addEventListener('click', () => {
+      // In the editor "reset" clears the selection so you can redraw.
+      if (cropEditing[which]) {
+        cropDraft[which] = null;
+        writeCropInputs(prefix, FULL_CROP);
+        refreshCropOverlays();
+        toast('Selection cleared — drag on the video to draw a new one.', 2000);
+        return;
+      }
       const full = { x: 0, y: 0, w: 1, h: 1 };
       state[key] = full;
       writeCropInputs(prefix, full);
       updateFn();
       updateUI();
+      savePrefsDebounced();
     });
+  }
+
+  /* Source options can be tucked away once a clip is loaded, so trim/crop
+     get the panel space. */
+  function setSourceCollapsed(collapsed) {
+    if (!sourceBody) return;
+    sourceBody.classList.toggle('is-hidden', collapsed);
+    drop.classList.toggle('is-compact', collapsed);
+    if (btnSourceCollapse) {
+      btnSourceCollapse.setAttribute('aria-expanded', String(!collapsed));
+      btnSourceCollapse.setAttribute('aria-label', collapsed ? 'Show source options' : 'Hide source options');
+      btnSourceCollapse.dataset.tip = collapsed ? 'Show source options' : 'Hide source options';
+      btnSourceCollapse.firstElementChild.style.transform = collapsed ? 'rotate(180deg)' : '';
+    }
   }
 
   function init() {
     tabUpload.addEventListener('click', () => selectTab('upload'));
     tabUrl.addEventListener('click', () => selectTab('url'));
     drop.addEventListener('click', () => fileInput.click());
+
+    // Empty-stage shortcuts: jump straight into the reference source.
+    if (btnEmptyUpload) btnEmptyUpload.addEventListener('click', () => fileInput.click());
+    if (btnEmptyUrl) {
+      btnEmptyUrl.addEventListener('click', () => {
+        selectTab('url');
+        setSourceCollapsed(false);
+        urlInput.focus();
+      });
+    }
+    if (btnRefReplace) {
+      btnRefReplace.addEventListener('click', () => {
+        setSourceCollapsed(false);
+        selectTab('upload');
+        fileInput.click();
+      });
+    }
+    if (btnSourceCollapse) {
+      btnSourceCollapse.addEventListener('click', () => {
+        setSourceCollapsed(!sourceBody.classList.contains('is-hidden'));
+      });
+    }
+
+    // Step tracker doubles as navigation.
+    Object.entries(stepEls).forEach(([key, el]) => {
+      if (!el) return;
+      el.addEventListener('click', () => {
+        if (key === 'ref') {
+          if (!state.refReady) fileInput.click();
+          else refCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else if (key === 'take') {
+          if (!state.camStream && !state.takeBlob) { openCamera().then(updateUI); return; }
+          takeCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else if (key === 'review') {
+          if (!btnReview.disabled) toggleReview();
+        } else if (key === 'export') {
+          if (!btnExportMerged.disabled) exportVideo('merged');
+        }
+      });
+    });
+
+    // Keyboard shortcuts (ignored while typing in a field).
+    document.addEventListener('keydown', (e) => {
+      const t = e.target;
+      const typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
+      if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === 'r' || e.key === 'R') {
+        if (state.recording) { e.preventDefault(); stopRecording(); }
+        else if (!btnRecord.disabled) { e.preventDefault(); btnRecord.click(); }
+      } else if (e.key === ' ') {
+        if (!btnReview.disabled) { e.preventDefault(); toggleReview(); }
+      } else if (e.key === 'e' || e.key === 'E') {
+        if (!btnExportMerged.disabled) { e.preventDefault(); exportVideo('merged'); }
+      } else if (e.key === 'Enter') {
+        // Enter commits the crop editor.
+        if (cropEditing.ref || cropEditing.take) {
+          e.preventDefault();
+          if (cropEditing.ref) applyCropEdit('ref');
+          if (cropEditing.take) applyCropEdit('take');
+        }
+      } else if (e.key === 'Escape') {
+        if (cropEditing.ref || cropEditing.take) {
+          if (cropEditing.ref) cancelCropEdit('ref', true);
+          if (cropEditing.take) cancelCropEdit('take', true);
+          toast('Crop cancelled.', 1600);
+        }
+        discardModal.classList.remove('is-on');
+      }
+    });
     drop.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
     fileInput.addEventListener('change', () => { const f = fileInput.files && fileInput.files[0]; if (f) loadFileReference(f); });
 
@@ -2647,6 +3952,7 @@
       trimStartEl.value = String(start);
       stopAllPlayback();
       updateTrimUI();
+      savePrefsDebounced();
     });
     trimEndEl.addEventListener('input', () => {
       const dur = state.refReady ? state.ref.duration : 0;
@@ -2656,6 +3962,7 @@
       trimEndEl.value = String(end);
       stopAllPlayback();
       updateTrimUI();
+      savePrefsDebounced();
     });
     btnTrimReset.addEventListener('click', () => {
       if (!state.refReady) return;
@@ -2664,22 +3971,41 @@
       trimEndEl.value = String(state.ref.duration);
       stopAllPlayback();
       updateTrimUI();
+      savePrefsDebounced();
     });
 
     bindCrop('crop', 'refCrop', updateRefLayout);
     bindCrop('tcrop', 'camCrop', updateTakeLayout);
+
+    // crop rectangle drawing on the stages
+    installCropDragger('ref', refCropOverlay, refCropBox, refCropBoxLabel);
+    installCropDragger('take', takeCropOverlay, takeCropBox, takeCropBoxLabel);
+
+    // One button, two meanings: "Crop" opens the editor, "Apply" commits it.
+    btnCropDraw.addEventListener('click', () => {
+      if (cropEditing.ref) applyCropEdit('ref');
+      else beginCropEdit('ref');
+    });
+    btnTcropDraw.addEventListener('click', () => {
+      if (cropEditing.take) applyCropEdit('take');
+      else beginCropEdit('take');
+    });
+    btnCropCancel.addEventListener('click', () => cancelCropEdit('ref'));
+    btnTcropCancel.addEventListener('click', () => cancelCropEdit('take'));
 
     refWidthEl.addEventListener('input', () => {
       state.refOutW = Number(refWidthEl.value);
       refWidthLabel.textContent = `${state.refOutW} px`;
       updateRefLayout();
       updateUI();
+      savePrefsDebounced();
     });
     takeWidthEl.addEventListener('input', () => {
       state.camOutW = Number(takeWidthEl.value);
       takeWidthLabel.textContent = `${state.camOutW} px`;
       updateTakeLayout();
       updateUI();
+      savePrefsDebounced();
     });
 
     btnRefPlay.addEventListener('click', toggleRefPreview);
@@ -2694,11 +4020,13 @@
     btnRefMute.addEventListener('click', () => {
       state.mutedRef = !state.mutedRef;
       syncRefAudio();
+      savePrefsDebounced();
     });
     btnRefLoop.addEventListener('click', () => {
       state.loopRef = !state.loopRef;
       btnRefLoop.classList.toggle('primary', state.loopRef);
       toast(state.loopRef ? 'Reference will loop' : 'Loop off', 1400);
+      savePrefsDebounced();
     });
 
     btnCamEnable.addEventListener('click', async () => {
@@ -2718,6 +4046,7 @@
       applyMirror();
       updateTakeLayout();
       updateUI();
+      savePrefsDebounced();
     });
 
     btnRecord.addEventListener('click', async () => {
@@ -2766,15 +4095,36 @@
       borderSizeLabel.textContent = `${state.borderSize} px`;
       updateDivider();
       updateUI();
+      savePrefsDebounced();
     });
     borderColorEl.addEventListener('input', () => {
       state.borderColor = borderColorEl.value;
       updateDivider();
+      savePrefsDebounced();
+    });
+
+    delayEl.addEventListener('input', () => {
+      state.refDelay = clamp(Math.round(Number(delayEl.value) * 10) / 10, 0, 3);
+      delayEl.value = String(state.refDelay);
+      delayLabel.textContent = `${state.refDelay.toFixed(1)} s`;
+      updateTrimUI();
+      updateUI();
+      savePrefsDebounced();
+    });
+    btnDelayReset.addEventListener('click', () => {
+      state.refDelay = 0.5;
+      delayEl.value = '0.5';
+      delayLabel.textContent = '0.5 s';
+      updateTrimUI();
+      updateUI();
+      savePrefsDebounced();
+      toast('Reference delay reset to 0.5 s.', 1600);
     });
 
     btnDownloadRef.addEventListener('click', () => exportVideo('ref'));
     btnDownloadTake.addEventListener('click', () => exportVideo('take'));
     btnExportMerged.addEventListener('click', () => exportVideo('merged'));
+    if (btnDownloadMergedAlt) btnDownloadMergedAlt.addEventListener('click', () => exportVideo('merged'));
     btnExportCancel.addEventListener('click', () => { exportState.cancel = true; });
 
     btnReset.addEventListener('click', () => {
@@ -2797,14 +4147,36 @@
       takeWidthLabel.textContent = '720 px';
       refOutHeightEl.textContent = '405 px';
       takeOutHeightEl.textContent = '540 px';
+      state.refDelay = 0.5;
+      delayEl.value = '0.5';
+      delayLabel.textContent = '0.5 s';
       writeCropInputs('crop', state.refCrop);
       writeCropInputs('tcrop', state.camCrop);
+      cropEditing.ref = false;
+      cropEditing.take = false;
+      cropDraft.ref = null;
+      cropDraft.take = null;
+      syncCropButtons();
       updateTrimUI();
       updateDivider();
       updateUI();
       refreshButtons();
+      savePrefsDebounced();
       toast('Session reset.', 1600);
     });
+
+    // Restore saved preferences before the first paint.
+    const saved = readPrefs();
+    if (saved) {
+      applyPrefs(saved);
+      btnRefLoop.classList.toggle('primary', !!state.loopRef);
+      delayLabel.textContent = `${state.refDelay.toFixed(1)} s`;
+      borderSizeLabel.textContent = `${state.borderSize} px`;
+      borderColorLabel.textContent = state.borderColor;
+      toast('Restored your saved settings.', 2000);
+    } else {
+      delayLabel.textContent = `${state.refDelay.toFixed(1)} s`;
+    }
 
     updateTrimUI();
     updateDivider();
@@ -2813,10 +4185,12 @@
     applyMirror();
     updateRefLayout();
     updateTakeLayout();
+    refreshCropOverlays();
     enumerateCameras();
     openCamera(true).then(() => updateUI()).catch(() => {});
     updateMuteButton();
     updateRefPlayLabel();
+    syncCropButtons();
   }
 
   function stopAllPlayback() {
